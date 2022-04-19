@@ -8,8 +8,20 @@ export const CategoriesContainer = styled.main`
     & aside {
         & > section {
             & > .options {
+                display: flex;
+                justify-content: space-between;
                 width: 100%;
                 height: 25px;
+
+                & > .space {
+                    width: 90px;
+                }
+
+                & > .title {
+                    color: ${props => props.isDark ? '#999' : '#666'};
+                    font-weight: bold;
+                    font-size: 18px;
+                }
 
                 & > .create {
                     display: flex;
@@ -18,8 +30,8 @@ export const CategoriesContainer = styled.main`
                     width: 90px;
                     padding: 5px 0;
                     border-radius: 20px;
-                    box-shadow: ${props => props.isDark ? '2px 2px 5px 2px rgba(0, 0, 0, .3)' : '2px 2px 5px 2px rgba(0, 0, 0, .1)'};
-                    background: ${props => props.isDark ? '#181818' : '#EEE'};
+                    box-shadow: ${props => props.isDark ? '2px 2px 5px 5px rgba(0, 0, 0, .1)' : '2px 2px 5px 5px rgba(0, 0, 0, .05)'};
+                    background: ${props => props.isDark ? '#282828' : '#FFF'};
                     color: #417493;
                     cursor: pointer;
                     user-select: none;

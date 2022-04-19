@@ -115,7 +115,7 @@ const Services = () => {
                 name="price" 
                 id="price" 
                 placeholder="$0.00" 
-                value={numeral(values.price).format('$0.00')}
+                value={values.price}
                 onChange={handleChange}
               />
               { errors.price && <div className="error">{ errors.price }</div> }
@@ -131,6 +131,7 @@ const Services = () => {
               <div className="go-back" onClick={() => navigate(-1)}>
                 <BiLeftArrowAlt style={{ fontSize: '24px' }} />Categorías
               </div>
+              <div className="title">Categorías</div>
               <button className='create' onClick={openModal}>
                 <AiOutlinePlus style={{ fontSize: '18px' }} />
                 <p>Crear &nbsp;</p>

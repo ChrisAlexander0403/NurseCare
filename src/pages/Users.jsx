@@ -1,59 +1,88 @@
 import React, { useEffect, useState } from 'react'
 import { AiOutlinePlus, AiFillDelete, AiFillEdit } from 'react-icons/ai';
-import axios from 'axios';
-import XMLParser from 'react-xml-parser';
 import { useSelector } from 'react-redux';
 
 import { selectSession } from '../features/slices/sessionSlice';
-import { UsersContainer } from '../styles/UsersStyles';
-import useImage from '../hooks/useImage';
+import { Confirm, UsersContainer } from '../styles/UsersStyles';
 import { Create } from '../styles/ServicesStyles';
 import Modal from '../components/modal/Modal';
 import useModal from '../hooks/useModal';
 import useForm from '../hooks/useForm';
 import userValidate from '../utils/validations/userValidate';
-import { createUserXmls } from '../XMLRequests/userRequests';
 import { selectTheme } from '../features/slices/themeSlice';
+import { createUserRequest, deleteUserRequest, getUsersRequest } from '../requests/UserRequests';
+import { Arrow, DropdownContent, DropdownList } from '../styles/DropdownListStyles';
+import InputFile from '../components/inputProfile/InputFile';
+import useFormatDate from '../hooks/useFormatDate';
+
+const userTypes = [
+  {
+    id: '0',
+    description: 'Administrador'
+  },
+  {
+    id: '1',
+    description: 'Reporteador'
+  }
+];
 
 const Users = () => {
 
   const [values, setValues] = useState({
+    picture: '',
     firstname: '',
     lastname: '',
     email: '',
-    password: ''
+    password: '',
+    rol: ''
   });
+  const [users, setUsers] = useState([]);
+  const [isActive, setIsActive] = useState(false);
+  const [selected, setSelected] = useState('Tipo de usuario');
+  const [delitingUser, setDelitingUser] = useState({});
+  const [icon, setIcon] = useState("");
+  // const [password, setPassword] = useState('');
 
   let session = useSelector(selectSession);
   let isDark = useSelector(selectTheme);
+  let formatDate = useFormatDate();
 
-  let { img, exists } = useImage("");
   const [isOpen, openModal, closeModal] = useModal(false);
+  const [confirmIsOpen, openConfirmModal, closeConfirmModal] = useModal(false);
   
-  const handleCreateUser = async ({ firstname, lastname, email, password }) => {    
-    let xmls = createUserXmls(session.id, firstname, lastname, email, password, session.apikey);
-    try {
-      const data = await axios.post('http://thenursecare.com/Demo/WSPortalDemo.php?wsdl', 
-        xmls, { withCredentials: false }, {
-          headers: {
-              'Content-Type': 'text/xml'
-          }
-      });
-      let xml = new XMLParser().parseFromString(data.data);
-      console.log(xml);
-      let tag = xml.getElementsByTagName('LoginNurseReturn');
-      let response = JSON.parse(tag[0].value);
-      console.log(response);
-    } catch(error) {
-      console.log(error);
+  const handleCreateUser = async ({ picture, firstname, lastname, email, password, rol }) => {    
+    let response = await createUserRequest(session.id, picture, firstname, lastname, email, password, rol, session.apikey);
+    if (response.status === 'success') {
+      response = await getUsersRequest(session.id, session.apikey);
+      setUsers(response.datos);
+      closeModal();
     }
   }
+
+  const handleDeleteUser = async (user) => {
+    // if (password) return;
+    let response = await deleteUserRequest(session.id, user, session.apikey);
+    if (response.status === 'success') {
+      response = await getUsersRequest(session.id, session.apikey);
+      setUsers(response.datos);
+      closeConfirmModal();
+    }
+  }
+
+  const updateUploadedFiles = (files) => setIcon(files);
+  const updateUploadedFilesInBase64 = (files) => setValues({ ...values, picture: files });
   
   const { handleChange, handleSubmit, errors } = useForm(values, setValues, handleCreateUser, userValidate);
 
   useEffect(() => {
-    
+    const getServices = async () => {
+      let response = await getUsersRequest(session.id, session.apikey);
+      setUsers(response.datos);
+      console.log(response);
+    }
+    getServices();
   
+    //eslint-disable-next-line
   }, []);
   
   
@@ -70,6 +99,16 @@ const Users = () => {
         <Create isDark={isDark}>
           <p className="title">Agregar usuario</p>
           <form onSubmit={handleSubmit} className="create-form">
+            <div className="form-group">
+              <label htmlFor="icon">Sube tu ícono (Tamaño máximo 500kb)</label>
+              <InputFile 
+                isDark={isDark}
+                accept={".png,.jpeg,.jpg"}
+                updateFilesCb={updateUploadedFiles}
+                updateFilesBase64Cb={updateUploadedFilesInBase64}
+              />
+              { errors.icon && <div className="error">{ errors.icon }</div> }
+            </div>
             <div className="form-group">
               <label htmlFor="firstname">Nombre(s)</label> 
               <input 
@@ -118,9 +157,59 @@ const Users = () => {
               />
             </div>
             {errors.password && <span className="error">{errors.password}</span>}
+            <div className="form-group">
+              <DropdownList isDark={isDark}>
+                <button type='button' onClick={() => setIsActive(!isActive)}>{selected}<Arrow /></button>
+                {isActive && (
+                  <DropdownContent isDark={isDark}>
+                    {userTypes.map((userType, index) => {
+                      return (
+                        <div key={index} className="item" onClick={() => { 
+                          setSelected(userType.description);
+                          setIsActive(false);
+                          setValues({ ...values, rol: userType.id });
+                        }}>
+                          {userType.description}
+                        </div>
+                      );
+                    })}
+                  </DropdownContent>
+                )}
+              </DropdownList>
+            </div>
+            { errors.rol && <div className="error">{errors.rol}</div> }
             <button type="submit">Guardar</button>
           </form>
         </Create>
+      </Modal>
+      <Modal
+        isOpen={confirmIsOpen}
+        type={'closing'}
+        important={false}
+        background={isDark ? '#181818' : '#EEE'}
+        maxHeight='140px'
+        minHeight='140px'
+      >
+        <Confirm>
+          <div className="info">
+            <p>¿Seguro que deseas eliminar este usuario?</p>
+            {/* <div className="password-container">
+              <label htmlFor="password">Ingresa tu contraseña para continuar</label>
+              <input 
+                type="password" 
+                name="password" 
+                id="password" 
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div> */}
+          </div>
+          <div className="buttons">
+              <button onClick={() => handleDeleteUser(delitingUser.idUser)}>Eliminar</button>
+              <button className='cancel' onClick={closeConfirmModal}>Cancelar</button>
+          </div>
+        </Confirm>
       </Modal>
       <UsersContainer isDark={isDark}>
         <div className="options">
@@ -130,20 +219,37 @@ const Users = () => {
           </div>
         </div>
         <div className='main-container'>
-          <div className="user">
-            <div className="user-header">
-              <p className="name">Usuario Empleado</p>
-              <p className="date">17/02/22</p>
-            </div>
-            <div className="user-info-preview">
-              <p className="type">Enfermera</p>
-              <p className="status">Estado: Activa</p>
-            </div>
-            <div className="buttons">
-              <button><AiFillEdit /> Editar</button>
-              <button className="delete"><AiFillDelete /> Eliminar</button>
-            </div>
-          </div>
+          {users.length > 0 && users.map((user) => {
+            return (
+              user.rol === '0' || user.status === '2' ? false :
+              <div className="user" key={user.idUser}>
+                <div className="user-header">
+                  <p className="name">{user.nombre}</p>
+                  <p className="date">{user.fechaCreacion 
+                    ? formatDate(user.fechaCreacion.slice(0,10)).compressedDate 
+                    : '17/02/22'}
+                  </p>
+                </div>
+                <div className="user-info-preview">
+                  <p className="type">{
+                    user.rol === '1' ? 'Administrador' : 
+                    user.rol === '2' && 'Reporteador'
+                  }</p>
+                  <p className="status">Estado: {
+                    user.status === '0' ? 'Deshabilidato' :
+                    user.status === '1' && 'Habilitado'
+                  }</p>
+                </div>
+                <div className="buttons">
+                  <button><AiFillEdit /> Editar</button>
+                  <button 
+                    className="delete"
+                    onClick={() => {setDelitingUser(user); openConfirmModal();}}
+                  ><AiFillDelete /> Eliminar</button>
+                </div>
+              </div>
+            )
+          })}
           {/* <div className="container-box">
             <div className="users">
               <div className="user">

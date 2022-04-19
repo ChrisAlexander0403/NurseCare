@@ -12,6 +12,7 @@ import InputFile from '../components/inputProfile/InputFile';
 import useForm from '../hooks/useForm';
 import { createCategory, getCategories } from '../requests/CategoriesRequests';
 import categoryValidate from '../utils/validations/categoryValidate';
+import ContextMenu from '../components/contextMenu/ContextMenu';
 
 const Categories = () => {
 
@@ -51,10 +52,12 @@ const Categories = () => {
     getCatalogs();
     //eslint-disable-next-line
   }, []);
-  
 
   return (
     <>
+    <ContextMenu>
+
+    </ContextMenu>
     <Modal
       isOpen={isOpen}
       closeModal={closeModal}
@@ -95,6 +98,8 @@ const Categories = () => {
         <aside>
             <section>
               <div className='options'>
+                <div className="space"></div>
+                <div className="title">Categorías</div>
                 <button className='create' onClick={openModal}>
                   <AiOutlinePlus style={{ fontSize: '18px' }} />
                   <p>Crear &nbsp;</p>

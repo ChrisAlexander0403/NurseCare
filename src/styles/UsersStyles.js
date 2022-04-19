@@ -14,8 +14,8 @@ export const UsersContainer = styled.div`
             width: 90px;
             padding: 5px 0;
             border-radius: 20px;
-            box-shadow: ${props => props.isDark ? '2px 2px 5px 2px rgba(0, 0, 0, .3)' : '2px 2px 5px 2px rgba(0, 0, 0, .1)'};
-            background: ${props => props.isDark ? '#181818' : '#EEE'};
+            box-shadow: ${props => props.isDark ? '2px 2px 5px 5px rgba(0, 0, 0, .1)' : '2px 2px 5px 5px rgba(0, 0, 0, .05)'};
+            background: ${props => props.isDark ? '#282828' : '#FFF'};
             color: #417493;
             cursor: pointer;
             user-select: none;
@@ -30,6 +30,7 @@ export const UsersContainer = styled.div`
 
     & > .main-container {
         display: flex;
+        flex-direction: column;
         justify-content: space-evenly;
         margin: 50px;
 
@@ -79,7 +80,7 @@ export const UsersContainer = styled.div`
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    width: 100px;
+                    width: 110px;
                     padding: 5px 15px;
                     border-radius: 15px;
                     border: none;
@@ -209,5 +210,37 @@ export const UsersContainer = styled.div`
                 }
             }
         } */
+    }
+`;
+
+export const Confirm = styled.div`
+    width: 100%;
+    height: 100px;
+
+    & > .info {
+        height: 70%;
+        padding: 10px;
+        color: #fff;
+        font-size: 14px;
+    }
+
+    & > .buttons {
+        height: 30%;
+        display: flex;
+        justify-content: space-evenly;
+
+        & > button {
+            padding: 5px 15px;
+            border: none;
+            border-radius: 20px;
+            background: #417493;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+
+            &.cancel {
+                background: #A93226;
+            }
+        }
     }
 `;

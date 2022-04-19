@@ -20,8 +20,8 @@ const getXmls = (email, password) => {
                         <apikey xsi:type="xsd:string">123</apikey>
                     </demo:LoginNurse>
                 </soapenv:Body>
-            </soapenv:Envelope>`);
-}
+            </soapenv:Envelope>`
+)}
 
               //admin@admin.mail
               //12345678a
@@ -58,6 +58,7 @@ const LogIn = () => {
                 dispatch(login({
                     id: response.idUser,
                     name: response.nombre,
+                    // password: response.contrase
                     rol: response.rol,
                     apikey: response.apiKey
                 }));
