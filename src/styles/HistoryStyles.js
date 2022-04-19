@@ -14,7 +14,7 @@ export const HistoryContainer = styled.div`
         
         & > .container-box {
             position: relative;
-            width: 350px;
+            width: 400px;
             height: 500px;
             padding: 20px;
             border-radius: 25px;
@@ -53,7 +53,7 @@ export const HistoryContainer = styled.div`
                     & > .info {
                         position: relative;
                         font-size: 12px;
-                        width: 70%;
+                        width: 75%;
                         padding: 5px 10px;
 
                         & > .header {
@@ -75,6 +75,14 @@ export const HistoryContainer = styled.div`
 
                         & > .body {
                             color: ${props => props.isDark ? '#888' : '#666'};
+
+                            & > .client {
+                                width: 100%;
+                                height: 30px;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                            }
                         }
                         & > button {
                             position: absolute;
@@ -87,7 +95,7 @@ export const HistoryContainer = styled.div`
                             padding: 3px 15px;
                             border-radius: 15px;
                             border: none;
-                            background: #417493;
+                            background: ${props => props.isDark ? '#213A4A' : '#417493'};
                             color: #eee;
                             cursor: pointer;
                         }
@@ -98,7 +106,7 @@ export const HistoryContainer = styled.div`
                         flex-direction: column;
                         align-items: center;
                         justify-content: center;
-                        width: 30%;
+                        width: 25%;
                         font-size: 22px;
 
                         & > p {
@@ -107,13 +115,13 @@ export const HistoryContainer = styled.div`
                     }
 
                     & > .checked {
-                        background: #BCE5B5;
-                        color: #4CBA3B;
+                        background: ${props => props.isDark ? '#4CBA3B' : '#BCE5B5'};
+                        color: ${props => props.isDark ? '#BCE5B5' : '#4CBA3B'};
                     }
                     
                     & > .canceled {
-                        background: #D49993;
-                        color: #A93226;
+                        background: ${props => props.isDark ? '#A93226' : '#D49993'};
+                        color: ${props => props.isDark ? '#D49993' : '#A93226'};
                     }
                 }
             }

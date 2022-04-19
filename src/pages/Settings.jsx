@@ -12,6 +12,7 @@ import useModal from '../hooks/useModal';
 import Modal from '../components/modal/Modal';
 import { CloseSession } from '../styles/SettingsStyles';
 import { selectTheme } from '../features/slices/themeSlice';
+import User from './User';
 
 const Settings = () => {
 
@@ -51,9 +52,9 @@ const Settings = () => {
                         <li>
                             <NavLink to="main">General</NavLink>
                         </li>
-                        <li>
+                        {/* <li>
                             <NavLink to="interface">Interfaz de aplicación</NavLink>
-                        </li>
+                        </li> */}
                         <li>
                             <NavLink to="users">Usuarios</NavLink>
                         </li>
@@ -72,7 +73,9 @@ const Settings = () => {
                 <Routes>
                     <Route path="main" exact element={<SettingsMain />} />
                     <Route path="interface" exact element={<Interface />} />
-                    <Route path="users" exact element={<Users />} />
+                    <Route path="users" exact element={<Users />}>
+                        <Route path=":id" element={<User />} />
+                    </Route>
                     <Route path="account" exact element={<Account />} />
                     <Route path="/" exact element={<Navigate to="main" />} />
                 </Routes>

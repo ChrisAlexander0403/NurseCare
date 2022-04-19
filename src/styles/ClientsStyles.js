@@ -9,6 +9,7 @@ export const ClientsContainer = styled.div`
 
     & > .main-container {
         display: flex;
+        flex-wrap: wrap-reverse;
         justify-content: space-evenly;
         margin: 30px;
         
@@ -20,6 +21,7 @@ export const ClientsContainer = styled.div`
             border-radius: 25px;
             box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, .2);
             overflow-y: auto;
+            margin-bottom: 25px;
 
             &:first-child {
                 box-shadow: inset 2px 2px 5px 5px rgba(0, 0, 0, .2);

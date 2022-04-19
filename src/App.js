@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 
 import ScrollToTop from './hooks/useScrollToTop';
@@ -63,7 +63,7 @@ function App() {
                   <Route exact path="services/*" element={<PrivateRoute><ServicesDashboard /></PrivateRoute>} />
                   <Route exact path="categories/*" element={<PrivateRoute><Categories /></PrivateRoute>} /> 
                   <Route exact path="settings/*" element={<PrivateRoute><Settings /></PrivateRoute>} /> 
-                  <Route exact path="/" element={<Home />} /> 
+                  <Route exact path="/" element={<Navigate to="dashboard" />} /> 
                 </Routes>
                 <footer>
 

@@ -220,7 +220,7 @@ export const Confirm = styled.div`
     & > .info {
         height: 70%;
         padding: 10px;
-        color: #fff;
+        color: ${props => props.isDark ? '#FFF' : '#444'};
         font-size: 14px;
     }
 

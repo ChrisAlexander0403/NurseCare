@@ -27,7 +27,6 @@ const Clients = () => {
   const handleGetClient = async (idClient) => {
     let data = await getClient(session.id, idClient, session.apikey)
     setClient(data);
-    console.log(client);
   }
 
   const handleBlocking = () => {
@@ -49,6 +48,7 @@ const Clients = () => {
         let xml = new XMLParser().parseFromString(data.data);
         let GetClients = xml.getElementsByTagName('GetClientNurseReturn');
         let response = JSON.parse(GetClients[0].value);
+        console.log(response.datos)
         setClients(response.datos);
       } catch(error) {
         console.log(error);
@@ -111,7 +111,7 @@ const Clients = () => {
         {client && (
           <div className="container-box">
           <div className="image-container">
-            <img style={{ "objectFit": `${!exists ? "contain" : "cover"}` }} src={img} alt="Profile" />
+            <img style={{ "objectFit": `${!exists ? "contain" : "cover"}` }} src={`http://thenursecare.com/Demo/${client.imagen}`} alt="Profile" />
           </div>
             <div className="user-container">
               <div className="user-info-container">

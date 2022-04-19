@@ -22,6 +22,7 @@ const Categories = () => {
     name: ''
   });
   const [icon, setIcon] = useState("");
+  const [options, setOptions] = useState([]);
   
   let [isOpen, openModal, closeModal] = useModal(false);
   let session = useSelector(selectSession);
@@ -53,9 +54,13 @@ const Categories = () => {
     //eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    setOptions(document.querySelectorAll('.catalog'));
+  }, []);
+
   return (
     <>
-    <ContextMenu>
+    <ContextMenu options={options}>
 
     </ContextMenu>
     <Modal
@@ -112,7 +117,7 @@ const Categories = () => {
               <div className="catalogs">
                 {catalogs.map((catalog) => {
                   return (
-                    <div className="catalog" key={catalog.idCatego} onClick={() => navigate(catalog.idCatego)}>
+                    <div id='catalog' className="catalog" key={catalog.idCatego} onClick={() => navigate(catalog.idCatego)}>
                         {catalog.icono 
                           ? <div className="img-container">
                               <img src={`http://thenursecare.com/Demo/${catalog.icono}`} alt={catalog.nombre} /> 

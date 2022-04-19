@@ -1,6 +1,6 @@
 import axios from "axios";
 import XMLParser from 'react-xml-parser';
-import { createUserXmls, deleteUserXmls, getAllUsersXmls, getUserXmls } from "../XMLRequests/userRequests";
+import { activateUserXmls, createUserXmls, deleteUserXmls, getAllUsersXmls, getUserXmls } from "../XMLRequests/userRequests";
 
 export const getUsersRequest = async (userId, apikey) => {
 
@@ -74,6 +74,24 @@ export const createUserRequest = async (userId, picture, firstname, lastname, em
     });
     let xml = new XMLParser().parseFromString(data.data);
     let tag = xml.getElementsByTagName('InsertUserPortNurseReturn');
+    let response = JSON.parse(tag[0].value);
+    return response;
+  } catch(error) {
+    console.log(error);
+  }
+}
+
+export const activateUserRequest = async (idUser, user, status, apikey) => {
+  let xmls = activateUserXmls(idUser, user, status, apikey);
+  try {
+    const data = await axios.post('http://thenursecare.com/Demo/WSPortalDemo.php?wsdl', 
+      xmls, { withCredentials: false }, {
+        headers: {
+            'Content-Type': 'text/xml'
+        }
+    });
+    let xml = new XMLParser().parseFromString(data.data);
+    let tag = xml.getElementsByTagName('UpdateStatusUserNurseReturn');
     let response = JSON.parse(tag[0].value);
     return response;
   } catch(error) {

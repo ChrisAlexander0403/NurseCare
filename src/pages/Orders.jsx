@@ -7,27 +7,43 @@ import { selectTheme } from '../features/slices/themeSlice';
 import useFormatDate from '../hooks/useFormatDate';
 
 import { OrdersContainer } from '../styles/OrdersStyles';
-import { getOrdersRequest } from '../requests/OrdersRequests';
+import { getOrdersRequest, updateOrderRequest } from '../requests/OrdersRequests';
 
 const Orders = () => {
 
   const [orders, setOrders] = useState([]);
+  const [order, setOrder] = useState();
 
   let isDark = useSelector(selectTheme);
   let session = useSelector(selectSession);
   let formatDate = useFormatDate();
 
+  const handleChangeOrderStatus = async (idOrder, status) => {
+    let response = await updateOrderRequest(session.id, idOrder, status, session.apikey);
+    if(response.status === 'success') {
+      response = await getOrdersRequest(session.id, session.apikey);
+      setOrders(orderArray(response.datos));
+    }
+  }
+
+  const orderArray = (unorderedArr) => {
+    let mediumArr = [...unorderedArr.filter(element => element.status !== 'Recibido')];
+    let orderedArr = [...unorderedArr.filter(element => element.status === 'Recibido')];
+    orderedArr.push(...mediumArr);
+    return orderedArr;
+  }
+
   useEffect(() => {
 
     const getOrders = async () => {
       let response = await getOrdersRequest(session.id, session.apikey);
-      setOrders(response.datos);
+      setOrders(orderArray(response.datos));
     }
 
     const intervalId = setInterval(() => { 
       getOrders();
       console.log(orders);
-    }, 30000);
+    }, 10000);
 
     getOrders();
     console.log(orders);
@@ -47,11 +63,13 @@ const Orders = () => {
         <div className="container-box">
           <div className="orders">
             { orders && orders.map((order) => {
-              return (
+              return ( order.status === 'Rechazado' ? false :
+                order.status === 'Cancelado' ? false :
+                order.status === 'Terminado' ? false :
                 <div className="order" key={order.idServiceSol}>
                   <div className="header">
-                    <p className="title">Pedido #1</p>
-                    <p className="date">{formatDate(order.fechaServicio.slice(0,10)).compressedDate}</p>
+                    <p className="title">Pedido #{order.idServiceSol}</p>
+                    <p className="date">{order.status}</p>
                   </div>
                   <div className="body">
                     <p>Para: {
@@ -62,8 +80,32 @@ const Orders = () => {
                     <p>{numeral(order.total).format('$0.00')}</p>
                   </div>
                   <div className="options">
-                    <button className="accept">Aceptar</button>
-                    <button className="reject">Rechazar</button>
+                    { order.status === 'Recibido' ? 
+                      <><button 
+                        className="accept" 
+                        onClick={() => handleChangeOrderStatus(order.idServiceSol, 'Aceptado')} 
+                      >Aceptar</button>
+                      <button 
+                        className="reject" 
+                        onClick={() => handleChangeOrderStatus(order.idServiceSol, 'Rechazado')} 
+                      >Rechazar</button></> : order.status === 'Aceptado' ?
+                      <><button 
+                        className="accept" 
+                        onClick={() => handleChangeOrderStatus(order.idServiceSol, 'En curso')} 
+                      >Iniciar</button>
+                      <button 
+                        className="reject" 
+                        onClick={() => handleChangeOrderStatus(order.idServiceSol, 'Cancelado')} 
+                      >Cancelar</button></> : order.status === 'En curso' &&
+                      <><button 
+                        className="accept" 
+                        onClick={() => handleChangeOrderStatus(order.idServiceSol, 'Terminado')} 
+                      >Terminar</button>
+                      <button 
+                        className="reject" 
+                        onClick={() => handleChangeOrderStatus(order.idServiceSol, 'Cancelado')} 
+                      >Cancelar</button></>
+                    }
                     <button className="details">Detalles <HiOutlineArrowNarrowRight /></button>
                   </div>
                 </div>
@@ -71,9 +113,12 @@ const Orders = () => {
             }) }
           </div>
         </div>
-        <div className="container-box">
-    
-        </div>
+        {
+          order && 
+          <div className="container-box">
+            
+          </div>
+        }
       </div>
     </OrdersContainer>
   );

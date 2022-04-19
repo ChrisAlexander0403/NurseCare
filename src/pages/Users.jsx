@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { AiOutlinePlus, AiFillDelete, AiFillEdit } from 'react-icons/ai';
+// import { FaUserCheck } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
+import { useNavigate, Outlet } from 'react-router-dom';
 
 import { selectSession } from '../features/slices/sessionSlice';
 import { Confirm, UsersContainer } from '../styles/UsersStyles';
@@ -17,11 +19,11 @@ import useFormatDate from '../hooks/useFormatDate';
 
 const userTypes = [
   {
-    id: '0',
+    id: '1',
     description: 'Administrador'
   },
   {
-    id: '1',
+    id: '2',
     description: 'Reporteador'
   }
 ];
@@ -45,6 +47,7 @@ const Users = () => {
 
   let session = useSelector(selectSession);
   let isDark = useSelector(selectTheme);
+  let navigate = useNavigate();
   let formatDate = useFormatDate();
 
   const [isOpen, openModal, closeModal] = useModal(false);
@@ -52,6 +55,7 @@ const Users = () => {
   
   const handleCreateUser = async ({ picture, firstname, lastname, email, password, rol }) => {    
     let response = await createUserRequest(session.id, picture, firstname, lastname, email, password, rol, session.apikey);
+    console.log(response);
     if (response.status === 'success') {
       response = await getUsersRequest(session.id, session.apikey);
       setUsers(response.datos);
@@ -190,7 +194,7 @@ const Users = () => {
         maxHeight='140px'
         minHeight='140px'
       >
-        <Confirm>
+        <Confirm isDark={isDark}>
           <div className="info">
             <p>¿Seguro que deseas eliminar este usuario?</p>
             {/* <div className="password-container">
@@ -241,7 +245,7 @@ const Users = () => {
                   }</p>
                 </div>
                 <div className="buttons">
-                  <button><AiFillEdit /> Editar</button>
+                  <button onClick={() => navigate(user.idUser)}><AiFillEdit /> Editar</button>
                   <button 
                     className="delete"
                     onClick={() => {setDelitingUser(user); openConfirmModal();}}
@@ -281,6 +285,7 @@ const Users = () => {
           </div> */}
         </div>
       </UsersContainer>
+      <Outlet />
     </>
   );
 }

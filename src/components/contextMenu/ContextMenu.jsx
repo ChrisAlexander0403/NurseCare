@@ -4,10 +4,10 @@ import { selectTheme } from '../../features/slices/themeSlice';
 import useContextMenu from '../../hooks/useContextMenu';
 import { ContextMenuContainer } from './contextMenuStyles';
 
-const ContextMenu = ({ children }) => {
+const ContextMenu = ({ children, options }) => {
 
     let isDark = useSelector(selectTheme);
-    const { anchorPoint, show } = useContextMenu();
+    const { anchorPoint, show } = useContextMenu(options);
 
     return show ? 
         (<ContextMenuContainer

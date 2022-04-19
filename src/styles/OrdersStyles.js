@@ -9,12 +9,13 @@ export const OrdersContainer = styled.div`
 
 & > .main-container {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-evenly;
     margin: 40px 30px;
     
     & > .container-box {
         position: relative;
-        width: 350px;
+        width: 400px;
         height: 500px;
         padding: 20px;
         border-radius: 25px;

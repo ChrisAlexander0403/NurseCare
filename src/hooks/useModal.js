@@ -1,10 +1,13 @@
 import { useState } from 'react';
 
-const useModal = (initialValue = false) => {
-    const [isOpen, setIsOpen] = useState(initialValue);
+const useModal = (initialValue, action) => {
+    const [isOpen, setIsOpen] = useState(initialValue ? initialValue : false);
     
     const openModal = () => setIsOpen(true);
-    const closeModal = () => setIsOpen(false);
+    const closeModal = () => {
+        if (action) action(-1);
+        setIsOpen(false);
+    }
 
     return [isOpen, openModal, closeModal];
 }
