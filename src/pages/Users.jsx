@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { AiOutlinePlus, AiFillDelete, AiFillEdit } from 'react-icons/ai';
+import { AiOutlinePlus, AiFillDelete } from 'react-icons/ai';
+// import { BiDetail } from 'react-icons/bi';
+import { MdContactPage } from 'react-icons/md';
 // import { FaUserCheck } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { useNavigate, Outlet } from 'react-router-dom';
@@ -79,13 +81,10 @@ const Users = () => {
   const { handleChange, handleSubmit, errors } = useForm(values, setValues, handleCreateUser, userValidate);
 
   useEffect(() => {
-    const getServices = async () => {
+    (async () => {
       let response = await getUsersRequest(session.id, session.apikey);
       setUsers(response.datos);
-      console.log(response);
-    }
-    getServices();
-  
+    })();
     //eslint-disable-next-line
   }, []);
   
@@ -226,6 +225,7 @@ const Users = () => {
           {users.length > 0 && users.map((user) => {
             return (
               user.rol === '0' || user.status === '2' ? false :
+              user.idUser === session.id ? false :
               <div className="user" key={user.idUser}>
                 <div className="user-header">
                   <p className="name">{user.nombre}</p>
@@ -245,11 +245,13 @@ const Users = () => {
                   }</p>
                 </div>
                 <div className="buttons">
-                  <button onClick={() => navigate(user.idUser)}><AiFillEdit /> Editar</button>
+                  <button 
+                    onClick={() => navigate(user.idUser)}
+                  ><MdContactPage style={{ fontSize: '18px', marginRight: '8px' }} /> Detalles</button>
                   <button 
                     className="delete"
                     onClick={() => {setDelitingUser(user); openConfirmModal();}}
-                  ><AiFillDelete /> Eliminar</button>
+                  ><AiFillDelete style={{ fontSize: '18px', marginRight: '8px' }} /> Eliminar</button>
                 </div>
               </div>
             )

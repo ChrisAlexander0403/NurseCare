@@ -79,12 +79,10 @@ export const UsersContainer = styled.div`
                 & > button {
                     display: flex;
                     align-items: center;
-                    justify-content: space-between;
-                    width: 110px;
                     padding: 5px 15px;
                     border-radius: 15px;
                     border: none;
-                    background: #417493;
+                    background: ${props => props.isDark ? '#213A4A' : '#417493'};
                     color: #eee;
                     font-weight: bold;
                     cursor: pointer;

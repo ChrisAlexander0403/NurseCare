@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 
+import './fonts.css';
 import ScrollToTop from './hooks/useScrollToTop';
 import NavBar from './components/navbar/NavBar';
 import PrivateRoute from './components/privateRoute/PrivateRoute';
@@ -12,14 +13,25 @@ import Categories from './pages/Categories';
 import Settings from './pages/Settings';
 import ServicesDashboard from './pages/ServicesDashboard';
 import { useSelector } from 'react-redux';
-import { selectTheme } from './features/slices/themeSlice';
+import { selectFont, selectTheme } from './features/slices/themeSlice';
 
 const GlobalStyle = createGlobalStyle`
   *{
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Raleway', sans-serif;
+    font-family: ${props => props.font};
+    /* font-family: 'Raleway', sans-serif; */
+    /* font-family: 'Montserrat', sans-serif; */
+    /* font-family: 'Roboto', sans-serif; */
+    /* font-family: 'Lato', sans-serif; */
+    /* font-family: 'Source Sans Pro', sans-serif; */
+    /* font-family: 'Poppins', sans-serif; */
+    /* font-family: 'Nunito Sans', sans-serif; */
+    /* font-family: 'Barlow', sans-serif; */
+    /* font-family: 'Source Serif Pro', serif; */
+    /* font-family: 'Cormorant Garamond', serif; */
+    /* font-family: 'Sarabun', sans-serif; */
   }
   body{
     background: ${props => props.isDark ? '#181818' : '#EEE'};
@@ -41,10 +53,11 @@ const GlobalStyle = createGlobalStyle`
 function App() {
 
   let isDark = useSelector(selectTheme);
+  let font = useSelector(selectFont);
 
   return (
     <>
-      <GlobalStyle isDark={isDark}/>
+      <GlobalStyle isDark={isDark} font={font} />
       <Helmet>
         <title>Nurse Care</title>
       </Helmet>

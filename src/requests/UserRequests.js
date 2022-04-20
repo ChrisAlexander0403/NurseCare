@@ -1,6 +1,6 @@
 import axios from "axios";
 import XMLParser from 'react-xml-parser';
-import { activateUserXmls, createUserXmls, deleteUserXmls, getAllUsersXmls, getUserXmls } from "../XMLRequests/userRequests";
+import { updateUserStatusXmls, createUserXmls, deleteUserXmls, getAllUsersXmls, getUserXmls } from "../XMLRequests/userRequests";
 
 export const getUsersRequest = async (userId, apikey) => {
 
@@ -36,7 +36,6 @@ export const getUserRequest = async (userId, user, apikey) => {
     let xml = new XMLParser().parseFromString(data.data);
     let GetUser = xml.getElementsByTagName('GetUserByIdNurseReturn');
     let response = JSON.parse(GetUser[0].value);
-    console.log(response);
     return response;
   } catch(error) {
     console.log(error);
@@ -81,8 +80,8 @@ export const createUserRequest = async (userId, picture, firstname, lastname, em
   }
 }
 
-export const activateUserRequest = async (idUser, user, status, apikey) => {
-  let xmls = activateUserXmls(idUser, user, status, apikey);
+export const updateUserStatusRequest = async (idUser, user, status, apikey) => {
+  let xmls = updateUserStatusXmls(idUser, user, status, apikey);
   try {
     const data = await axios.post('http://thenursecare.com/Demo/WSPortalDemo.php?wsdl', 
       xmls, { withCredentials: false }, {
@@ -91,8 +90,9 @@ export const activateUserRequest = async (idUser, user, status, apikey) => {
         }
     });
     let xml = new XMLParser().parseFromString(data.data);
-    let tag = xml.getElementsByTagName('UpdateStatusUserNurseReturn');
-    let response = JSON.parse(tag[0].value);
+    let updateUserStatus = xml.getElementsByTagName('UpdateStatusUserNurseReturn');
+    let response = JSON.parse(updateUserStatus[0].value);
+    console.log(response);
     return response;
   } catch(error) {
     console.log(error);

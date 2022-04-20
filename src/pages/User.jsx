@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { AiFillEdit } from 'react-icons/ai';
+import { FaUser } from 'react-icons/fa';
+import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import Modal from '../components/modal/Modal';
 import { selectSession } from '../features/slices/sessionSlice';
 import { selectTheme } from '../features/slices/themeSlice';
+import useImageV2 from '../hooks/useImageV2';
 import useModal from '../hooks/useModal';
-import { getUserRequest } from '../requests/UserRequests';
+import { getUserRequest, updateUserStatusRequest } from '../requests/UserRequests';
 import { UserContainer } from '../styles/UserStyles';
 
 const User = () => {
@@ -15,16 +19,23 @@ const User = () => {
     const navigate = useNavigate();
     let session = useSelector(selectSession);
     let isDark = useSelector(selectTheme);
+    const image = useImageV2();
 
     const [isOpen, openModal, closeModal] = useModal(true, navigate);
 
+    const handleUpdateStatus = async (status) => {
+        let response = await updateUserStatusRequest(session.id, user.email, status, session.apikey );
+        if (response.status === 'success') {
+            response = await getUserRequest(session.id, id, session.apikey);
+            setUser(response.datos[0]);
+        }
+    }
+
     useEffect(() => {
-        const getUser = async () => {
+        (async () => {
             let response = await getUserRequest(session.id, id, session.apikey);
             setUser(response.datos[0]);
-            console.log(user);
-        }
-        getUser();
+        })();
         //eslint-disable-next-line
     }, []);
     
@@ -33,7 +44,7 @@ const User = () => {
         <Modal
             isOpen={isOpen}
             closeModal={closeModal}
-            type='cancel'
+            type='close'
             background={isDark ? '#181818' : '#EEE'}
             color='#417493'
             minWidth='460px'
@@ -42,7 +53,12 @@ const User = () => {
                 <UserContainer isDark={isDark}>
                     <div className="user-image">
                         <div className="img-container">
-                            <img src={`http://thenursecare.com/Demo/${user.imagen}`} alt="" />
+                            {
+                                image(`http://thenursecare.com/Demo/${user.imagen}`).exists
+                                ? <img src={image(`http://thenursecare.com/Demo/${user.imagen}`).img} alt="" />
+                                : <FaUser style={{ fontSize: '110px', color: isDark ? '#383838' : '#CCC' }} /> 
+
+                            }
                         </div>
                     </div>
                     <div className="content">
@@ -74,7 +90,18 @@ const User = () => {
                         </div>
                     </div>
                     <div className="buttons">
-
+                        {
+                            user.status === '0' 
+                            ? <button 
+                                className="enable"
+                                onClick={() => handleUpdateStatus(1)}
+                            ><MdPersonAdd style={{ marginRight: '8px', fontSize: '18px' }} />Habilitar</button>
+                            : <button 
+                                className="disable"
+                                onClick={() => handleUpdateStatus(0)}
+                            ><MdPersonRemove style={{ marginRight: '8px', fontSize: '18px' }} />Deshabilitar</button>
+                        }
+                        <button className="edit"><AiFillEdit style={{ marginRight: '8px', fontSize: '17px' }} />Editar</button>
                     </div>
                 </UserContainer>
             }

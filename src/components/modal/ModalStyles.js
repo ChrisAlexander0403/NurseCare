@@ -33,10 +33,16 @@ export const ModalStyles = styled.section`
             justify-content: center;
             width: 24px;
             height: 24px;
-            background: #A93226;
+            font-size: 20px;
+            color: ${props => props.isDark ? '#999' : '#666'};
+            background: none;
             border: none;
             border-radius: 7px;
             cursor: pointer;
+
+            &:hover {
+                background: #A93226;
+            }
         }
 
         & > .modal-close-text {

@@ -57,17 +57,17 @@ export const deleteUserXmls = (id, user, apikey) => {
         </soapenv:Envelope>`);
 }
 
-export const activateUserXmls = (idUser, user, status, apikey) => {
+export const updateUserStatusXmls = (idUser, user, status, apikey) => {
     return (
         `<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:demo="http://thenursecare.com/Demo/">
             <soapenv:Header/>
             <soapenv:Body>
-                <demo:RemoveUserPortNurse soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+                <demo:UpdateStatusUserNurse soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
                     <iduser xsi:type="xsd:int">${idUser}</iduser>
                     <usuario xsi:type="xsd:string">${user}</usuario>
                     <id_status xsi:type="xsd:int">${status}</id_status>
                     <apikey xsi:type="xsd:string">${apikey}</apikey>
-                </demo:RemoveUserPortNurse>
+                </demo:UpdateStatusUserNurse>
             </soapenv:Body>
         </soapenv:Envelope>`);
 }
