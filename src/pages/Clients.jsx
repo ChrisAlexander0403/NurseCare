@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ClientsContainer } from '../styles/ClientsStyles';
 import { HiOutlineArrowNarrowRight } from 'react-icons/hi';
-import useImage from '../hooks/useImage';
+import useImageV2 from '../hooks/useImageV2';
 import { getClientsXmls } from '../XMLRequests/clientRequests';
 import { getClient } from '../requests/ClientsRequests';
 import { selectSession } from '../features/slices/sessionSlice';
@@ -18,7 +18,7 @@ const Clients = () => {
   const [clients, setClients] = useState([]);
   const [client, setClient] = useState();
 
-  let { img, exists } = useImage("");
+  let image = useImageV2();
   const [isOpen, openModal, closeModal] = useModal();
 
   let session = useSelector(selectSession);
@@ -111,7 +111,14 @@ const Clients = () => {
         {client && (
           <div className="container-box">
           <div className="image-container">
-            <img style={{ "objectFit": `${!exists ? "contain" : "cover"}` }} src={`http://thenursecare.com/Demo/${client.imagen}`} alt="Profile" />
+            <img 
+              style={{ 
+                "objectFit": !image(`http://thenursecare.com/Demo/${client.imagen}`).exists 
+                ? "contain" : "cover"
+              }} 
+              src={image(`http://thenursecare.com/Demo/${client.imagen}`).img} 
+              alt="Profile" 
+            />
           </div>
             <div className="user-container">
               <div className="user-info-container">

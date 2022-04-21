@@ -4,7 +4,10 @@ export const themeSlice = createSlice({
     name: 'theme',
     initialState: {
         isDark: false,
-        font: "'Raleway', sans-serif"
+        font: {
+            name: 'Raleway',
+            css: "'Raleway', sans-serif"
+        }
     },
     reducers: {
         switchTheme: (state) => {

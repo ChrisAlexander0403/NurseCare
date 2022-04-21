@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Moon, Sun, Switch, ThemeDiv } from '../components/navbar/NavBarStyles';
 import { selectTheme, switchTheme, changeFont, selectFont } from '../features/slices/themeSlice';
-import { DropdownContent, DropdownList } from '../styles/DropdownListStyles';
+import { Arrow, DropdownContent, DropdownList } from '../styles/DropdownListStyles';
 import { SettingsMainContainer } from '../styles/SettingsMainStyles';
 
 const fonts = [
@@ -75,8 +75,8 @@ const SettingsMain = () => {
 
   useEffect(() => {
     
-    setSelected()
-  }, []);
+    setSelected(actualFont.name);
+  }, [actualFont]);
   
 
   useEffect(() => {
@@ -106,24 +106,26 @@ const SettingsMain = () => {
         </div>
         <div className="option">
           <p>Fuente</p>
-          <DropdownList isDark={isDark}>
-                <button type='button' onClick={() => setIsActive(!isActive)}>{selected}<Arrow /></button>
-                {isActive && (
-                  <DropdownContent isDark={isDark}>
-                    {fonts.map((font, index) => {
-                      return (
-                        <div key={index} className="item" onClick={() => { 
-                          setSelected(font.description);
-                          setIsActive(false);
-                          setValues({ ...values, rol: font.id });
-                        }}>
-                          {font.description}
-                        </div>
-                      );
-                    })}
-                  </DropdownContent>
-                )}
-              </DropdownList>
+          <div style={{ width: '250px' }}>
+            <DropdownList isDark={isDark}>
+              <button type='button' onClick={() => setIsActive(!isActive)}>{selected}<Arrow /></button>
+              {isActive && (
+                <DropdownContent isDark={isDark}>
+                  {fonts.map((font, index) => {
+                    return (
+                      <div key={index} className="item" onClick={() => { 
+                        setSelected(font.name);
+                        setIsActive(false);
+                        dispatch(changeFont({ name: font.name, css: font.css }));
+                      }}>
+                        {font.name}
+                      </div>
+                    );
+                  })}
+                </DropdownContent>
+              )}
+            </DropdownList>
+          </div>
         </div>
       </div>
     </SettingsMainContainer>
