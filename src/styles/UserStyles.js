@@ -54,9 +54,21 @@ export const UserContainer = styled.div`
         & > .content-line {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             width: 100%;
             padding: 10px;
             border-bottom: ${props => props.isDark ? '1px solid #666' : '1px solid #999'};
+
+            & > input {
+                padding: 5px 10px;
+                width: 250px;
+                background: #eee;
+                color: #000;
+                text-align: right;
+                border: none;
+                outline: none;
+                border-radius: 25px;
+            }
 
             &:last-child {
                 border: none;
@@ -97,6 +109,11 @@ export const UserContainer = styled.div`
 
             &.edit {
                 background: ${props => props.isDark ? '#213A4A' : '#417493'};
+                color: #fff;
+            }
+
+            &.cancel {
+                background: #A93226;
                 color: #fff;
             }
         }
