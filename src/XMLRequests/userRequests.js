@@ -15,6 +15,24 @@ export const createUserXmls = (id, picture, firstname, lastname, email, password
             </soapenv:Envelope>`);
 }
 
+//Edit image
+/* <imagen xsi:type="xsd:string">${picture}</imagen> */
+export const editUserXmls = (id, name, email, password, rol, apikey) => {
+    return (`<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:demo="http://thenursecare.com/Demo/">
+                <soapenv:Header/>
+                <soapenv:Body>
+                    <demo:EditUserPortNurse soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+                        <user xsi:type="xsd:string">${email}</user>
+                        <password xsi:type="xsd:string">${password}</password>
+                        <rol xsi:type="xsd:int">${rol}</rol>
+                        <nombre xsi:type="xsd:string">${name}</nombre>
+                        <iduser xsi:type="xsd:int">${id}</iduser>
+                        <apikey xsi:type="xsd:string">${apikey}</apikey>
+                    </demo:EditUserPortNurse>
+                </soapenv:Body>
+            </soapenv:Envelope>`);
+}
+
 //Falta editar
 export const getAllUsersXmls = (id, apikey) => {
 

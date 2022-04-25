@@ -7,22 +7,38 @@ import { selectTheme } from '../features/slices/themeSlice';
 import useFormatDate from '../hooks/useFormatDate';
 
 import { OrdersContainer } from '../styles/OrdersStyles';
-import { getOrdersRequest, updateOrderRequest } from '../requests/OrdersRequests';
+import { getOrderDetailsRequest, getOrdersRequest, updateOrderRequest } from '../requests/OrdersRequests';
+import { getClient } from '../requests/ClientsRequests';
+import useImageV2 from '../hooks/useImageV2';
 
 const Orders = () => {
 
   const [orders, setOrders] = useState([]);
   const [order, setOrder] = useState();
+  const [client, setClient] = useState();
+  // const [service, setService] = useState();
 
   let isDark = useSelector(selectTheme);
   let session = useSelector(selectSession);
   let formatDate = useFormatDate();
+  const image = useImageV2();
 
   const handleChangeOrderStatus = async (idOrder, status) => {
     let response = await updateOrderRequest(session.id, idOrder, status, session.apikey);
     if(response.status === 'success') {
       response = await getOrdersRequest(session.id, session.apikey);
       setOrders(orderArray(response.datos));
+    }
+  }
+
+  const handleGetOrder = async (idOrder) => {
+    let response = await getOrderDetailsRequest(session.id, idOrder, session.apikey);
+    if(response.status === 'success') {
+      setOrder(response.datos[0]);
+      response = await getClient(session.id, response.datos[0].idCliente, session.apikey);
+      console.log(response.datos)
+      setClient(response.datos[0]);
+      // response = await getService
     }
   }
 
@@ -37,16 +53,16 @@ const Orders = () => {
 
     const getOrders = async () => {
       let response = await getOrdersRequest(session.id, session.apikey);
+
+      console.log(response.datos);
       setOrders(orderArray(response.datos));
     }
 
     const intervalId = setInterval(() => { 
       getOrders();
-      console.log(orders);
     }, 10000);
 
     getOrders();
-    console.log(orders);
 
     return (() => {
       clearInterval(intervalId);
@@ -106,7 +122,10 @@ const Orders = () => {
                         onClick={() => handleChangeOrderStatus(order.idServiceSol, 'Cancelado')} 
                       >Cancelar</button></>
                     }
-                    <button className="details">Detalles <HiOutlineArrowNarrowRight /></button>
+                    <button 
+                      className="details"
+                      onClick={() => handleGetOrder(order.idServiceSol)}
+                    >Detalles <HiOutlineArrowNarrowRight /></button>
                   </div>
                 </div>
               );
@@ -114,9 +133,35 @@ const Orders = () => {
           </div>
         </div>
         {
-          order && 
+          order && client &&
           <div className="container-box">
-            
+            <div className="order">
+              <div className="img-container">
+                <img src="" alt="" />
+              </div>
+              <div className="header">Nombre de servicio</div>
+              <div className="body">
+                <div className="service">
+
+                </div>
+                <div className="client">
+                  <div className="img-container">
+                    <img src={image(`http://thenursecare.com/Demo/${client.imagen}`).img}  alt="" />
+                  </div>
+                  <div className="content">
+                    <div className="content-line">
+                      <p><span>Cliente: </span>{client.nombre}</p>                
+                    </div>
+                    <div className="content-line">
+                      <p><span>Dirección: </span>{client.direccion}</p>
+                    </div>
+                    <div className="content-line">
+                      <p><span>Teléfono: </span>{client.telefono}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         }
       </div>

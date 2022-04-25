@@ -4,7 +4,7 @@ import { AiOutlinePlus, AiFillDelete } from 'react-icons/ai';
 import { MdContactPage } from 'react-icons/md';
 // import { FaUserCheck } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 
 import { selectSession } from '../features/slices/sessionSlice';
 import { Confirm, UsersContainer } from '../styles/UsersStyles';
@@ -51,6 +51,7 @@ const Users = () => {
   let isDark = useSelector(selectTheme);
   let navigate = useNavigate();
   let formatDate = useFormatDate();
+  let location = useLocation();
 
   const [isOpen, openModal, closeModal] = useModal(false);
   const [confirmIsOpen, openConfirmModal, closeConfirmModal] = useModal(false);
@@ -86,7 +87,7 @@ const Users = () => {
       setUsers(response.datos);
     })();
     //eslint-disable-next-line
-  }, []);
+  }, [location]);
   
   
   return (

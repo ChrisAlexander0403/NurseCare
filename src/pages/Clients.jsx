@@ -25,8 +25,8 @@ const Clients = () => {
   let isDark = useSelector(selectTheme);
 
   const handleGetClient = async (idClient) => {
-    let data = await getClient(session.id, idClient, session.apikey)
-    setClient(data);
+    let response = await getClient(session.id, idClient, session.apikey)
+    setClient(response.datos[0]);
   }
 
   const handleBlocking = () => {
@@ -58,9 +58,6 @@ const Clients = () => {
     getClients();
     
     console.log(clients);
-    return () => {
-      
-    }
     //eslint-disable-next-line
   }, []);
 

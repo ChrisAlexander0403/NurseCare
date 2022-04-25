@@ -1,6 +1,6 @@
 import axios from "axios";
 import XMLParser from 'react-xml-parser';
-import { updateUserStatusXmls, createUserXmls, deleteUserXmls, getAllUsersXmls, getUserXmls } from "../XMLRequests/userRequests";
+import { updateUserStatusXmls, createUserXmls, deleteUserXmls, getAllUsersXmls, getUserXmls, editUserXmls } from "../XMLRequests/userRequests";
 
 export const getUsersRequest = async (userId, apikey) => {
 
@@ -74,6 +74,25 @@ export const createUserRequest = async (userId, picture, firstname, lastname, em
     let xml = new XMLParser().parseFromString(data.data);
     let tag = xml.getElementsByTagName('InsertUserPortNurseReturn');
     let response = JSON.parse(tag[0].value);
+    return response;
+  } catch(error) {
+    console.log(error);
+  }
+}
+
+export const EditUserRequest = async (userId, name, email, password, rol, apikey) => {    
+  let xmls = editUserXmls(userId, name, email, password, rol, apikey);
+  try {
+    const data = await axios.post('http://thenursecare.com/Demo/WSPortalDemo.php?wsdl', 
+      xmls, { withCredentials: false }, {
+        headers: {
+            'Content-Type': 'text/xml'
+        }
+    });
+    let xml = new XMLParser().parseFromString(data.data);
+    let tag = xml.getElementsByTagName('EditUserPortNurseReturn');
+    let response = JSON.parse(tag[0].value);
+    console.log(response)
     return response;
   } catch(error) {
     console.log(error);

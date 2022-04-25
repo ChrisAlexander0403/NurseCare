@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AiFillEdit } from 'react-icons/ai';
+import { AiFillEdit, AiFillSave } from 'react-icons/ai';
 import { IoMdClose } from 'react-icons/io';
 import { FaUser } from 'react-icons/fa';
 import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
@@ -10,9 +10,11 @@ import { selectSession } from '../features/slices/sessionSlice';
 import { selectTheme } from '../features/slices/themeSlice';
 import useImageV2 from '../hooks/useImageV2';
 import useModal from '../hooks/useModal';
-import { getUserRequest, updateUserStatusRequest } from '../requests/UserRequests';
+import { EditUserRequest, getUserRequest, updateUserStatusRequest } from '../requests/UserRequests';
 import { Arrow, DropdownContent, DropdownList } from '../styles/DropdownListStyles';
 import { UserContainer } from '../styles/UserStyles';
+import useForm from '../hooks/useForm';
+import editUserValidate from '../utils/validations/editUserValidate';
 
 const userTypes = [
     {
@@ -63,10 +65,20 @@ const User = () => {
             password: user.password,
             rol: user.rol
         });
-        console.log(values)
         setSelected(user.rol === '1' ? 'Administrador' : 'Reporteador')
-        setEditMode(true)
+        setEditMode(true);
     }
+
+    const handleEditUser = async  ({ name, email, password, rol }) => {
+        let response = await EditUserRequest(session.id, name, email, password, rol, session.apikey);
+        if (response.status === 'success') {
+            response = await getUserRequest(session.id, id, session.apikey);
+            setUser(response.datos[0]);
+            setEditMode(false);
+        }
+    }
+
+    const { handleChange, handleSubmit, errors } = useForm(values, setValues, handleEditUser, editUserValidate);
     
     useEffect(() => {
         (async () => {
@@ -97,18 +109,18 @@ const User = () => {
                             }
                         </div>
                     </div>
-                    <form onSubmit='' className="content">
+                    <form onSubmit={handleSubmit} className="content">
                         <div className="content-line">
                             <label htmlFor='name'>Nombre</label>
                             {
                                 editMode ? 
                                 <input 
-                                    id="nombre" 
+                                    id="name" 
                                     type="text" 
                                     placeholder="Nombre"
-                                    name="nombre"
+                                    name="name"
                                     value={values.name}
-                                    // onChange={handleChange}
+                                    onChange={handleChange}
                                 /> : 
                                 <p>{user.nombre}</p>
                             }
@@ -118,8 +130,12 @@ const User = () => {
                             {
                                 editMode ? 
                                 <input 
+                                    id="email"
                                     type='text'
-                                    defaultValue={user.email}
+                                    placeholder="Correo"
+                                    name="email"
+                                    value={values.email}
+                                    onChange={handleChange}
                                 /> : 
                                 <p>{user.email}</p>
                             }
@@ -157,8 +173,12 @@ const User = () => {
                             {
                                 editMode ? 
                                 <input 
+                                    id="password"
                                     type='password'
-                                    defaultValue={user.password}
+                                    placeholder="Contraseña"
+                                    name="password"
+                                    value={values.password}
+                                    onChange={handleChange}
                                 /> : 
                                 <p>{'*'.repeat(user.password.length)}</p>
                             }
@@ -170,32 +190,45 @@ const User = () => {
                                 : user.status === '1' && 'Habilitado'
                             }</p>
                         </div>
+                        <div className="content-line">
+                            <div className="buttons">
+                                {
+                                    user.status === '0' 
+                                    ? <button 
+                                        type='button'
+                                        className="enable"
+                                        onClick={() => handleUpdateStatus(1)}
+                                    ><MdPersonAdd style={{ marginRight: '8px', fontSize: '18px' }} />Habilitar</button>
+                                    : <button 
+                                        type='button'
+                                        className="disable"
+                                        onClick={() => handleUpdateStatus(0)}
+                                    ><MdPersonRemove style={{ marginRight: '8px', fontSize: '18px' }} />Deshabilitar</button>
+                                }
+                                {
+                                    editMode === true &&
+                                    <button 
+                                        type='submit'
+                                        className="enable"
+                                    ><AiFillSave style={{ marginRight: '8px', fontSize: '18px' }} />Guardar</button>
+                                }
+                                {
+                                    !editMode ?
+                                    <button 
+                                        type='button'
+                                        className="edit" 
+                                        onClick={handleEdit}
+                                    ><AiFillEdit style={{ marginRight: '8px', fontSize: '17px' }} />Editar</button>
+                                    : 
+                                    <button 
+                                        type='button'
+                                        className="cancel" 
+                                        onClick={() => setEditMode(false)}
+                                    ><IoMdClose style={{ marginRight: '8px', fontSize: '17px' }} />Cancelar</button>
+                                }
+                            </div>
+                        </div>
                     </form>
-                    <div className="buttons">
-                        {
-                            user.status === '0' 
-                            ? <button 
-                                className="enable"
-                                onClick={() => handleUpdateStatus(1)}
-                            ><MdPersonAdd style={{ marginRight: '8px', fontSize: '18px' }} />Habilitar</button>
-                            : <button 
-                                className="disable"
-                                onClick={() => handleUpdateStatus(0)}
-                            ><MdPersonRemove style={{ marginRight: '8px', fontSize: '18px' }} />Deshabilitar</button>
-                        }
-                        {
-                            !editMode ?
-                            <button 
-                                className="edit" 
-                                onClick={handleEdit}
-                            ><AiFillEdit style={{ marginRight: '8px', fontSize: '17px' }} />Editar</button>
-                            : 
-                            <button 
-                                className="cancel" 
-                                onClick={handleEdit}
-                            ><IoMdClose style={{ marginRight: '8px', fontSize: '17px' }} />Cancelar</button>
-                        }
-                    </div>
                 </UserContainer>
             }
         </Modal>

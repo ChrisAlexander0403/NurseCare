@@ -9,8 +9,7 @@ export const getOrdersRequest = async (userId, apikey) => {
 
   try {
     const data = await axios.post('http://thenursecare.com/Demo/WSPortalDemo.php?wsdl', 
-      xmls, 
-    {withCredentials:false}, {
+      xmls, {withCredentials:false}, {
       headers: {
         'Content-Type': 'text/xml'
       }, 
@@ -24,9 +23,9 @@ export const getOrdersRequest = async (userId, apikey) => {
   }
 }   
 
-export const getOrderDetailsRequest = async (order) => {
+export const getOrderDetailsRequest = async (id, idOrder, apikey) => {
 
-  let xmls = getOrderDetailsXmls(order);
+  let xmls = getOrderDetailsXmls(id, idOrder, apikey);
 
   try {
       const data = await axios.post('http://thenursecare.com/Demo/WSPortalDemo.php?wsdl', xmls, 
@@ -36,9 +35,9 @@ export const getOrderDetailsRequest = async (order) => {
         }, 
       });
     let xml = new XMLParser().parseFromString(data.data);
-    let GetOrders = xml.getElementsByTagName('GetServicesSolNurseReturn');
+    let GetOrders = xml.getElementsByTagName('GetServSolbyIdNurseReturn');
     let response = JSON.parse(GetOrders[0].value);
-    return response.datos;
+    return response;
   } catch(error) {
     console.log(error);
   }

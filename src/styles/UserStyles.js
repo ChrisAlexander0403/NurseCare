@@ -62,8 +62,8 @@ export const UserContainer = styled.div`
             & > input {
                 padding: 5px 10px;
                 width: 250px;
-                background: #eee;
-                color: #000;
+                background: ${props => props.isDark ? '#383838' : '#FFF'};
+                color: ${props => props.isDark ? '#FFF' : '#000'};
                 text-align: right;
                 border: none;
                 outline: none;
@@ -72,49 +72,50 @@ export const UserContainer = styled.div`
 
             &:last-child {
                 border: none;
+                padding: 15px 0 0;
             }
-        }
-    }
 
-    & > .buttons {
-        display: flex;
-        justify-content: flex-end;
-        width: 100%;
-        padding: 0 10px;
+            & > .buttons {
+                display: flex;
+                justify-content: flex-end;
+                width: 100%;
+                padding: 0 10px;
 
-        & > button {
-            display: flex;
-            align-items: center;
-            padding: 4px 10px;
-            border: none;
-            outline: none;
-            border-radius: 15px;
-            margin-left: 10px;
-            font-weight: bold;
-            cursor: pointer;
+                & > button {
+                    display: flex;
+                    align-items: center;
+                    padding: 4px 10px;
+                    border: none;
+                    outline: none;
+                    border-radius: 15px;
+                    margin-left: 10px;
+                    font-weight: bold;
+                    cursor: pointer;
 
-            &.disable {
-                background: ${props => props.isDark ? '#383838' : '#AAA'};
-                color: #fff;
+                    &.disable {
+                        background: ${props => props.isDark ? '#383838' : '#AAA'};
+                        color: #fff;
 
-                &:hover {
-                    color: #A93226;
+                        &:hover {
+                            color: #A93226;
+                        }
+                    }
+
+                    &.enable {
+                        background: ${props => props.isDark ? '#383838' : '#AAA'};
+                        color: #fff;
+                    }
+
+                    &.edit {
+                        background: ${props => props.isDark ? '#213A4A' : '#417493'};
+                        color: #fff;
+                    }
+
+                    &.cancel {
+                        background: #A93226;
+                        color: #fff;
+                    }
                 }
-            }
-
-            &.enable {
-                background: ${props => props.isDark ? '#383838' : '#AAA'};
-                color: #fff;
-            }
-
-            &.edit {
-                background: ${props => props.isDark ? '#213A4A' : '#417493'};
-                color: #fff;
-            }
-
-            &.cancel {
-                background: #A93226;
-                color: #fff;
             }
         }
     }
