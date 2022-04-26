@@ -10,18 +10,20 @@ import { OrdersContainer } from '../styles/OrdersStyles';
 import { getOrderDetailsRequest, getOrdersRequest, updateOrderRequest } from '../requests/OrdersRequests';
 import { getClient } from '../requests/ClientsRequests';
 import useImageV2 from '../hooks/useImageV2';
+import { getServiceRequest } from '../requests/ServicesRequests';
 
 const Orders = () => {
 
   const [orders, setOrders] = useState([]);
   const [order, setOrder] = useState();
   const [client, setClient] = useState();
-  // const [service, setService] = useState();
+  const [service, setService] = useState();
 
   let isDark = useSelector(selectTheme);
   let session = useSelector(selectSession);
   let formatDate = useFormatDate();
   const image = useImageV2();
+  const image2 = useImageV2();
 
   const handleChangeOrderStatus = async (idOrder, status) => {
     let response = await updateOrderRequest(session.id, idOrder, status, session.apikey);
@@ -32,13 +34,16 @@ const Orders = () => {
   }
 
   const handleGetOrder = async (idOrder) => {
-    let response = await getOrderDetailsRequest(session.id, idOrder, session.apikey);
-    if(response.status === 'success') {
-      setOrder(response.datos[0]);
-      response = await getClient(session.id, response.datos[0].idCliente, session.apikey);
-      console.log(response.datos)
-      setClient(response.datos[0]);
-      // response = await getService
+    let orderResponse = await getOrderDetailsRequest(session.id, idOrder, session.apikey);
+    if(orderResponse.status === 'success') {
+      let clientResponse;
+      let serviceResponse;
+      setOrder(orderResponse.datos[0]);
+      clientResponse = await getClient(session.id, orderResponse.datos[0].idCliente, session.apikey);
+      setClient(clientResponse.datos[0]);
+      serviceResponse = await getServiceRequest(session.id, orderResponse.datos[0].idServicio, session.apikey);
+      console.log(serviceResponse);
+      setService(serviceResponse.datos[0]);
     }
   }
 
@@ -53,8 +58,6 @@ const Orders = () => {
 
     const getOrders = async () => {
       let response = await getOrdersRequest(session.id, session.apikey);
-
-      console.log(response.datos);
       setOrders(orderArray(response.datos));
     }
 
@@ -133,13 +136,13 @@ const Orders = () => {
           </div>
         </div>
         {
-          order && client &&
+          order && client && service &&
           <div className="container-box">
             <div className="order">
               <div className="img-container">
-                <img src="" alt="" />
+                <img src={image2(`http://thenursecare.com/Demo/${service.imagen}`).img} alt="" />
               </div>
-              <div className="header">Nombre de servicio</div>
+              <div className="header">{service.nombre}</div>
               <div className="body">
                 <div className="service">
 

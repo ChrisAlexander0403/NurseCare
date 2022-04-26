@@ -109,8 +109,31 @@ export const OrdersContainer = styled.div`
             }
 
             & > .order {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
                 width: 100%;
                 height: 100%;
+
+                & > .img-container {
+                    width: 150px;
+                    height: 150px;
+                    border-radius: 50%;
+                    overflow: hidden;
+
+                    & > img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                    }
+                }
+
+                & > .header {
+                    color: #417493;
+                    font-size: 20px;
+                    font-weight: bold;
+                    margin: 10px;
+                }
 
                 & > .body {
                     width: 100%;
@@ -136,8 +159,19 @@ export const OrdersContainer = styled.div`
                             display: block;
                             width: 70%;
                             height: 100%;
+                            padding: 0 5px;
 
                             & > .content-line {
+                                height: 36px;
+
+                                &:nth-child(2) {
+                                    height: 54px;
+                                }
+
+                                &:nth-child(3) {
+                                    height: 18px;
+                                }
+
                                 & > p {
                                     color: ${props => props.isDark ? '#999' : '#666'};
                                     & > span {

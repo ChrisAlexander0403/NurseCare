@@ -1,6 +1,6 @@
 import axios from "axios";
 import XMLParser from 'react-xml-parser';
-import { createServiceXmls, getServicesXmls } from "../XMLRequests/servicesRequests";
+import { createServiceXmls, getServicesXmls, getServiceXmls } from "../XMLRequests/servicesRequests";
 
 export const getServicesRequest = async (userId, categoryId, apikey) => {
 
@@ -16,6 +16,26 @@ export const getServicesRequest = async (userId, categoryId, apikey) => {
     let xml = new XMLParser().parseFromString(data.data);
     let GetServices = xml.getElementsByTagName('GetServicesNurseReturn');
     let response = JSON.parse(GetServices[0].value);
+    return response;
+  } catch(error) {
+    console.log(error);
+  }
+}
+
+export const getServiceRequest = async (userId, idService, apikey) => {
+
+  let xmls = getServiceXmls(userId, idService, apikey);
+
+  try {
+    const data = await axios.post('http://thenursecare.com/Demo/WSPortalDemo.php?wsdl', xmls, 
+    {withCredentials:false}, {
+      headers: {
+        'Content-Type': 'text/xml'
+      }, 
+    });
+    let xml = new XMLParser().parseFromString(data.data);
+    let GetService = xml.getElementsByTagName('GetServiceByIdNurseReturn');
+    let response = JSON.parse(GetService[0].value);
     return response;
   } catch(error) {
     console.log(error);
