@@ -138,6 +138,25 @@ export const OrdersContainer = styled.div`
                 & > .body {
                     width: 100%;
 
+                    & > .service {
+                        margin-bottom: 10px;
+
+                        & > p {
+                            margin-bottom: 3px;
+
+                            & > span {
+                                color: #417493;
+                                font-weight: bold;
+                            }
+
+                            &:nth-child(1) {
+                                color: #417493;
+                                font-weight: bold;
+                            }
+                        }
+
+                    }
+
                     & > .client {
                         display: flex;
                         width: 100%;
@@ -176,7 +195,7 @@ export const OrdersContainer = styled.div`
                                     color: ${props => props.isDark ? '#999' : '#666'};
                                     & > span {
                                         font-weight: bold;
-                                        color: ${props => props.isDark ? '#417493' : '#213A4A'}
+                                        color: #417493;
                                     }
                                 }
                             }

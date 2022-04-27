@@ -9,6 +9,7 @@ import History from './History';
 import Clients from './Clients';
 import { selectTheme } from '../features/slices/themeSlice';
 import { useSelector } from 'react-redux';
+import Order from './Order';
 
 const Dashboard = () => {
 
@@ -41,7 +42,9 @@ const Dashboard = () => {
             <div className="pages">
                 <Routes>
                     <Route path="home" exact element={<DashboardHome />} />
-                    <Route path="orders" exact element={<Orders />} />
+                    <Route path="orders" exact element={<Orders />}>
+                        <Route path=":id" element={<Order />}/>
+                    </Route>
                     <Route path="history" exact element={<History />} />
                     <Route path="/" exact element={<Navigate to="home" />} />
                     <Route path="clients" exact element={<Clients />} />

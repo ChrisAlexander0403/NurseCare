@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { HiOutlineArrowNarrowRight } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
+import { Outlet, useNavigate } from 'react-router-dom';
 import numeral from 'numeral';
 import { selectSession } from '../features/slices/sessionSlice';
 import { selectTheme } from '../features/slices/themeSlice';
@@ -21,6 +22,7 @@ const Orders = () => {
 
   let isDark = useSelector(selectTheme);
   let session = useSelector(selectSession);
+  let navigate = useNavigate();
   let formatDate = useFormatDate();
   const image = useImageV2();
   const image2 = useImageV2();
@@ -76,6 +78,7 @@ const Orders = () => {
   
 
   return (
+    <>
     <OrdersContainer isDark={isDark}>
       <h1>Pedidos en curso</h1>
       <div className="main-container">
@@ -127,7 +130,7 @@ const Orders = () => {
                     }
                     <button 
                       className="details"
-                      onClick={() => handleGetOrder(order.idServiceSol)}
+                      onClick={() => navigate(order.idServiceSol)}
                     >Detalles <HiOutlineArrowNarrowRight /></button>
                   </div>
                 </div>
@@ -145,7 +148,18 @@ const Orders = () => {
               <div className="header">{service.nombre}</div>
               <div className="body">
                 <div className="service">
-                  
+                  <p>{numeral(service.costo).format('$0.00')}</p>
+                  <p>{service.descripcion}</p>
+                  <p><span>Para:</span> {
+                    order.fechaSolServ.length > 2
+                    ? formatDate(order.fechaSolServ.slice(0,10)).compressedDate + ' a las ' + order.fechaSolServ.slice(11,16)
+                    : 'No hay fecha definida'
+                  }</p>
+                  <p><span>Comentarios:</span> <br/>{
+                    order.cometario.length > 1
+                    ? order.cometario
+                    : 'No hay comentarios'
+                  }</p>
                 </div>
                 <div className="client">
                   <div className="img-container">
@@ -169,6 +183,8 @@ const Orders = () => {
         }
       </div>
     </OrdersContainer>
+    <Outlet />
+    </>
   );
 }
 
