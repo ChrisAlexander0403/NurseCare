@@ -38,7 +38,7 @@ const PieComponent = () => {
           cy='50%'
           labelLine={true}
           label={renderCustomizedLabel}
-          outerRadius={150}  
+          outerRadius={200}  
           fill={ isDark ? '#213A4A' : '#417493'}
           stroke={isDark ? '#181818' : '#EEE'}
         >

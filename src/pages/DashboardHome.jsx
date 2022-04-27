@@ -62,11 +62,11 @@ const DashboardHome = () => {
 
   return (
     <DashboardHomeContainer isDark={isDark}>
-      <div className="bar">
-        <BarComponent />
-      </div>
       <div className="pie">
         <PieComponent />
+      </div>
+      <div className="bar">
+        <BarComponent />
       </div>
       <div className="details">
         <h3>Servicios</h3>

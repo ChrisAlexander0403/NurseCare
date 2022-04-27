@@ -83,18 +83,18 @@ const BarComponent = () => {
             margin={{
                 top: 5,
                 right: 30,
-                left: 20,
+                left: 30,
                 bottom: 5
             }}
-            barSize={20}
+            barSize={40}
             style={{ color: isDark ? '#999' : '#666' }}
         >
             <XAxis 
                 dataKey="name" 
                 scale="point" 
                 padding={{
-                    left: 10,
-                    right: 10
+                    left: 20,
+                    right: 20
                 }}
                 stroke={isDark ? '#999' : '#666'}
             />

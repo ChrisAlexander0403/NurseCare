@@ -2,23 +2,24 @@ import styled from "styled-components";
 
 export const DashboardHomeContainer = styled.div`
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat(2, 50%);
-    grid-auto-rows: 400px 120px;
-    grid-template-areas: "bar pie"
-                         "details details";
-    grid-gap: 50px 0;
+    display: flex;
+    flex-direction: column;
+
+    & > div {
+        margin-bottom: 30px;
+    }
     
     & > .bar {
-        grid-area: bar;
+        width: 700px;
     }
 
     & > .pie {
-        grid-area: pie;
+        width: 700px;
+        height: 550px;
     }
 
     & > .details {
-        grid-area: details;
+        
 
         & > h3 {
             color: #417493;
