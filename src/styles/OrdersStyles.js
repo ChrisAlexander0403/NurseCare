@@ -13,14 +13,7 @@ export const OrdersContainer = styled.div`
         justify-content: space-evenly;
         margin: 40px 30px;
         
-        & > .container-box {
-            position: relative;
-            width: 400px;
-            height: 500px;
-            padding: 20px;
-            border-radius: 25px;
-            box-shadow: ${props => props.isDark ? '2px 2px 5px 5px rgba(0, 0, 0, .2)' : '2px 2px 5px 5px rgba(0, 0, 0, .1)'};
-            overflow-y: auto;
+        
 
             &:first-child {
                 box-shadow: inset 2px 2px 5px 5px rgba(0, 0, 0, .2);
@@ -58,7 +51,7 @@ export const OrdersContainer = styled.div`
                         display: flex;
                         justify-content: space-between;
                         width: 100%;
-                        font-size: 14px;
+                        font-size: 16px;
 
                         & > .title {
                             font-weight: bold;
@@ -71,7 +64,7 @@ export const OrdersContainer = styled.div`
                     }
 
                     & > .body {
-                        font-size: 13px;
+                        font-size: 14px;
                         color: ${props => props.isDark ? '#888' : '#666'};
                     }
 
@@ -85,7 +78,7 @@ export const OrdersContainer = styled.div`
                             color: #fff;
                             border-radius: 15px;
                             font-weight: bold;
-                            margin-left: 10px;
+                            margin: 0 10px 10px;
                             cursor: pointer;
                         }
 
@@ -204,6 +197,6 @@ export const OrdersContainer = styled.div`
                 }
             }
 
-        }
+        
     }
 `;

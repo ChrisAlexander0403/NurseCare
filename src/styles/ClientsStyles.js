@@ -13,7 +13,7 @@ export const ClientsContainer = styled.div`
         justify-content: space-evenly;
         margin: 30px;
         
-        & > .container-box {
+        /* & > .container-box {
             position: relative;
             width: 350px;
             height: 500px;
@@ -36,7 +36,7 @@ export const ClientsContainer = styled.div`
                 background: ${props => props.isDark ? '#383838' : '#ccc'};
                 margin-bottom: 10px; 
                 margin-top: 10px;
-            }
+            } */
 
             & > .image-container {
                 position: absolute;
@@ -107,7 +107,7 @@ export const ClientsContainer = styled.div`
                         display: flex;
                         justify-content: space-between;
                         width: 100%;
-                        font-size: 14px;
+                        font-size: 16px;
 
                         & > .name {
                             font-weight: bold;
@@ -122,7 +122,7 @@ export const ClientsContainer = styled.div`
                     & > .client-body {
                         & > .address {
                             margin-top: 2px;
-                            font-size: 13px;
+                            font-size: 14px;
                             color: ${props => props.isDark ? '#999' : '#666'};
                         }
                     }
@@ -166,6 +166,6 @@ export const ClientsContainer = styled.div`
                     }
                 }
             }
-        }
+        
     }
 `;

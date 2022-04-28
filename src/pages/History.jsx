@@ -3,7 +3,9 @@
 import { useEffect, useState } from 'react';
 import { BsCheckLg, BsXLg } from 'react-icons/bs';
 import { HiOutlineArrowNarrowRight } from 'react-icons/hi';
+import { BiSearch } from 'react-icons/bi';
 import { useSelector } from 'react-redux';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { selectSession } from '../features/slices/sessionSlice';
 import { selectTheme } from '../features/slices/themeSlice';
 import useFormatDate from '../hooks/useFormatDate';
@@ -15,6 +17,7 @@ const History = () => {
   const [orders, setOrders] = useState([]);
   const [order, setOrder] = useState();
 
+  const navigate = useNavigate();
   let isDark = useSelector(selectTheme);
   let session = useSelector(selectSession);
   let formatDate = useFormatDate();
@@ -38,10 +41,16 @@ const History = () => {
   }, []);
 
   return (
+    <>
     <HistoryContainer isDark={isDark}>
       <h1>Historial de pedidos</h1>
       <div className="main-container">
-        <div className="container-box">
+          <div className="filters">
+            <form className="search">
+              <input type="text" name="search" id="search" />
+              <button><BiSearch /></button>
+            </form>
+          </div>
           <div className="orders">
             {
               orders && orders.map((order) => {
@@ -55,7 +64,7 @@ const History = () => {
                       <div className="body">
                         <p className="client">{order.cometario}</p>
                       </div>
-                      <button>Detalles <HiOutlineArrowNarrowRight /></button>
+                      <button onClick={() => navigate(order.idServiceSol)}>Detalles <HiOutlineArrowNarrowRight /></button>
                     </div>
                     {
                       order.status === 'Terminado' ?
@@ -84,8 +93,10 @@ const History = () => {
 
           </div>
         }
-      </div>
+      
     </HistoryContainer>
+    <Outlet />
+    </>
   );
 }
 

@@ -82,7 +82,7 @@ const Orders = () => {
     <OrdersContainer isDark={isDark}>
       <h1>Pedidos en curso</h1>
       <div className="main-container">
-        <div className="container-box">
+      
           <div className="orders">
             { orders && orders.map((order) => {
               return ( order.status === 'Rechazado' ? false :
@@ -181,7 +181,7 @@ const Orders = () => {
             </div>
           </div>
         }
-      </div>
+      
     </OrdersContainer>
     <Outlet />
     </>

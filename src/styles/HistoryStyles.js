@@ -9,10 +9,44 @@ export const HistoryContainer = styled.div`
 
     & > .main-container {
         display: flex;
+        flex-direction: column;
         justify-content: space-evenly;
         margin: 40px 30px;
+
+        & > .filters {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 30px;
+
+            & > .search {
+                width: 400px;
+                height: 30px;
+                border-radius: 20px;
+                overflow: hidden;
+
+                & > input {
+                    height: 100%;
+                    width: 90%;
+                    padding: 2px 10px;
+                    border: none;
+                    outline: none;
+                    background: ${props => props.isDark ? '#282828' : '#FFF'};
+                    color: ${props => props.isDark ? '#999' : '#666'};
+                }
+                & > button {
+                    height: 100%;
+                    width: 10%;
+                    border: none;
+                    outline: none;
+                    background: ${props => props.isDark ? '#282828' : '#FFF'};
+                    color: ${props => props.isDark ? '#999' : '#666'};
+                    border-left: ${props => props.isDark ? '1px solid #181818' : '1px solid #EEE'};
+                }
+            }
+        }
         
-        & > .container-box {
+        /* & > .container-box {
             position: relative;
             width: 400px;
             height: 500px;
@@ -34,7 +68,7 @@ export const HistoryContainer = styled.div`
                 background: ${props => props.isDark ? '#383838' : '#ccc'};
                 margin-bottom: 10px; 
                 margin-top: 10px;
-            }
+            } */
 
             & > .orders {
                 width: 100%;
@@ -52,15 +86,15 @@ export const HistoryContainer = styled.div`
                     
                     & > .info {
                         position: relative;
-                        font-size: 12px;
-                        width: 75%;
-                        padding: 5px 10px;
+                        font-size: 14px;
+                        width: 80%;
+                        padding: 5px 15px;
 
                         & > .header {
                             display: flex;
                             justify-content: space-between;
                             width: 100%;
-                            font-size: 14px;
+                            font-size: 16px;
 
                             & > .title {
                                 font-weight: bold;
@@ -90,8 +124,8 @@ export const HistoryContainer = styled.div`
                             align-items: center;
                             justify-content: space-between;
                             width: 100px;
-                            right: 5px;
-                            bottom: 5px;
+                            right: 15px;
+                            bottom: 10px;
                             padding: 3px 15px;
                             border-radius: 15px;
                             border: none;
@@ -106,7 +140,7 @@ export const HistoryContainer = styled.div`
                         flex-direction: column;
                         align-items: center;
                         justify-content: center;
-                        width: 25%;
+                        width: 20%;
                         font-size: 22px;
 
                         & > p {
@@ -125,6 +159,6 @@ export const HistoryContainer = styled.div`
                     }
                 }
             }
-        }
+        
     }
 `;
