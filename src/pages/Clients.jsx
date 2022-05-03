@@ -53,7 +53,7 @@ const Clients = () => {
       <h1>Clientes</h1>
       <div className="main-container">
           <div className="clients">
-            {clients.map((client) => {
+            {clients && clients.map((client) => {
               return (
                 <div className="client" key={client.idUser}>
                   <div className="client-header">
