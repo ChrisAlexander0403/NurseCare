@@ -26,7 +26,7 @@ const NavBar = () => {
 
     return (
         <Nav isDark={isDark}>
-            <Link to="/" className='logo'><img src="/logo.png" alt="" /></Link>
+            <Link to="/" className='logo'><img src="assets/logo.png" alt="" /></Link>
             <ul>
                 {/* <li><NavLink to="/">Inicio</NavLink></li> */}
                 <li><NavLink to="/dashboard">Dashboard</NavLink></li>

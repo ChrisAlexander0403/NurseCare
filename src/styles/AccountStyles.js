@@ -58,7 +58,7 @@ export const AccountContainer = styled.div`
             margin-top: 20px;
             padding: 20px 0;
             border-radius: 25px;
-            box-shadow: ${props => props.isDark ? '2px 2px 5px 5px rgba(0, 0, 0, .1)' : '2px 2px 5px 5px rgba(0, 0, 0, .5)'};
+            box-shadow: ${props => props.isDark ? '2px 2px 5px 5px rgba(0, 0, 0, .1)' : '2px 2px 5px 5px rgba(0, 0, 0, .05)'};
             background: ${props => props.isDark ? '#222' : '#FFF'};
 
             & > .content-line {
