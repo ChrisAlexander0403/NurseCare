@@ -158,7 +158,7 @@ const Categories = () => {
           <article>
             <section>
               <div className="catalogs">
-                {catalogs.map((catalog) => {
+                {catalogs && catalogs.map((catalog) => {
                   return (
                     <div id='catalog' className="catalog" key={catalog.idCatego} onClick={() => navigate(catalog.idCatego)}>
                         <button 

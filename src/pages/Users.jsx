@@ -223,7 +223,7 @@ const Users = () => {
           </div>
         </div>
         <div className='main-container'>
-          {users.length > 0 && users.map((user) => {
+          {users && users.map((user) => {
             return (
               user.rol === '0' || user.status === '2' ? false :
               user.idUser === session.id ? false :
