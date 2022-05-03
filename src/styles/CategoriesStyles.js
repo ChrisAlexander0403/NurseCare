@@ -55,6 +55,7 @@ export const CategoriesContainer = styled.main`
         padding: 20px;
         
         & > .catalog {
+            position: relative;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -63,10 +64,26 @@ export const CategoriesContainer = styled.main`
             width: 170px;
             height: 170px;
             box-shadow: ${props => props.isDark ? '2px 2px 5px 2px rgba(0, 0, 0, .3)' : '2px 2px 5px 2px rgba(0, 0, 0, .1)'};
-            background: ${props => props.isDark ? '#222' : '#EEE'};
+            background: ${props => props.isDark ? '#282828' : '#FFF'};
             border-radius: 25px;
             transition: all .3s ease;
             cursor: pointer;
+
+            & > button {
+                position: absolute;
+                right: 10px;
+                top: 10px;
+                border: none;
+                outline: none;
+                background: none;
+                color: ${props => props.isDark ? '#999' : '#666'};
+                font-size: 18px;
+                cursor: pointer;
+
+                &:hover {
+                    color: #A93226;
+                }
+            }
 
             & > .img-container {
                 width: 100px;

@@ -8,7 +8,7 @@ const useFormatDate = () => {
             const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio',
             'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
             
-            return months[parseInt(month) + 1];
+            return months[parseInt(month) - 1];
         }
 
         let compressedDate = [day, month, year].join('/');

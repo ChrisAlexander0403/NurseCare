@@ -8,11 +8,13 @@ import { selectTheme } from '../features/slices/themeSlice';
 import useModal from '../hooks/useModal';
 import { CategoriesContainer, Create } from '../styles/CategoriesStyles';
 import { AiOutlineMedicineBox } from 'react-icons/ai';
+import { RiDeleteBackFill } from 'react-icons/ri';
 import InputFile from '../components/inputProfile/InputFile';
 import useForm from '../hooks/useForm';
-import { createCategory, getCategories } from '../requests/CategoriesRequests';
+import { createCategory, deleteCategoryRequest, getCategories } from '../requests/CategoriesRequests';
 import categoryValidate from '../utils/validations/categoryValidate';
-import ContextMenu from '../components/contextMenu/ContextMenu';
+import { Confirm } from '../styles/UsersStyles';
+// import ContextMenu from '../components/contextMenu/ContextMenu';
 
 const Categories = () => {
 
@@ -23,8 +25,10 @@ const Categories = () => {
   });
   const [icon, setIcon] = useState("");
   const [options, setOptions] = useState([]);
+  const [delitingCategory, setDelitingCategory] = useState();
   
   let [isOpen, openModal, closeModal] = useModal(false);
+  const [confirmIsOpen, openConfirmModal, closeConfirmModal] = useModal(false);
   let session = useSelector(selectSession);
   let isDark = useSelector(selectTheme);
   let navigate = useNavigate();
@@ -43,12 +47,22 @@ const Categories = () => {
     closeModal();
   }
 
+  const handleDelete = async (id) => {
+    let response = await deleteCategoryRequest(session.id, id, session.apikey);
+    if (response.status === 'success') {
+      response = await getCategories(session.id, session.apikey);
+      setCatalogs(response.datos);
+      closeConfirmModal();
+    }
+  }
+
   const { handleChange, handleSubmit, errors } = useForm(values, setValues, submitForm, categoryValidate);
 
   useEffect(() => {
     const getCatalogs = async () => {
       let response = await getCategories(session.id, session.apikey);
       setCatalogs(response.datos);
+      console.log(response)
     }
     getCatalogs();
     //eslint-disable-next-line
@@ -60,9 +74,9 @@ const Categories = () => {
 
   return (
     <>
-    <ContextMenu options={options}>
+    {/* <ContextMenu options={options}>
 
-    </ContextMenu>
+    </ContextMenu> */}
     <Modal
       isOpen={isOpen}
       closeModal={closeModal}
@@ -99,6 +113,35 @@ const Categories = () => {
           </form>
         </Create>
     </Modal>
+    <Modal
+        isOpen={confirmIsOpen}
+        type={'closing'}
+        important={false}
+        background={isDark ? '#181818' : '#EEE'}
+        maxHeight='140px'
+        minHeight='140px'
+      >
+        <Confirm isDark={isDark}>
+          <div className="info">
+            <p>¿Seguro que deseas eliminar esta categoría?</p>
+            {/* <div className="password-container">
+              <label htmlFor="password">Ingresa tu contraseña para continuar</label>
+              <input 
+                type="password" 
+                name="password" 
+                id="password" 
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div> */}
+          </div>
+          <div className="buttons">
+              <button onClick={(e) => handleDelete(delitingCategory)}>Eliminar</button>
+              <button className='cancel' onClick={closeConfirmModal}>Cancelar</button>
+          </div>
+        </Confirm>
+      </Modal>
       <CategoriesContainer isDark={isDark}>
         <aside>
             <section>
@@ -118,6 +161,10 @@ const Categories = () => {
                 {catalogs.map((catalog) => {
                   return (
                     <div id='catalog' className="catalog" key={catalog.idCatego} onClick={() => navigate(catalog.idCatego)}>
+                        <button 
+                          className='delete'
+                          onClick={(e) => { e.stopPropagation(); setDelitingCategory(catalog.idCatego); openConfirmModal();}}
+                        ><RiDeleteBackFill /></button>
                         {catalog.icono 
                           ? <div className="img-container">
                               <img src={`http://thenursecare.com/Demo/${catalog.icono}`} alt={catalog.nombre} /> 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ClientsContainer } from '../styles/ClientsStyles';
 import { HiOutlineArrowNarrowRight } from 'react-icons/hi';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { getClientsXmls } from '../XMLRequests/clientRequests';
 import { selectSession } from '../features/slices/sessionSlice';
 import { useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ const Clients = () => {
   let session = useSelector(selectSession);
   let isDark = useSelector(selectTheme);
   const navigate = useNavigate();
+  let location = useLocation();
 
   useEffect(() => {
 
@@ -44,7 +45,7 @@ const Clients = () => {
     
     console.log(clients);
     //eslint-disable-next-line
-  }, []);
+  }, [location]);
 
   return (
     <>

@@ -72,7 +72,7 @@ export const ServicesContainer = styled.div`
 
         & > .container-box {
             position: relative;
-            width: 350px;
+            width: 450px;
             height: 500px;
             padding: 20px;
             border-radius: 25px;
@@ -110,18 +110,20 @@ export const ServicesContainer = styled.div`
                     overflow: hidden;
 
                     & > .img-container {
-                        width: 120px;
+                        width: 90px;
                         height: 90px;
 
                         & > img {
                             width: 100%;
                             height: 100%;
                             object-fit: cover;
+                            object-position: center;
                         }
                     }
 
                     & > .service-info {
-                        width: 100%;
+                        position: relative;
+                        width: 320px;
                         height: 90px;
                         padding: 5px 10px;
 
@@ -129,7 +131,7 @@ export const ServicesContainer = styled.div`
                             display: flex;
                             justify-content: space-between;
                             width: 100%;
-                            font-size: 14px;
+                            font-size: 16px;
 
                             & > .title {
                                 font-weight: bold;
@@ -139,6 +141,32 @@ export const ServicesContainer = styled.div`
                             & > .price {
                                 color: #666;
                             }
+                        }
+
+                        & > .service-body {
+                            & > p {
+                                font-size: 14px;
+                                color: ${props => props.isDark ? '#999' : '#666'};
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                            }
+                        }
+
+                        & > button {
+                            position: absolute;
+                            bottom: 10px;
+                            right: 15px;
+                            display: flex;
+                            align-items: center;
+                            padding: 4px 10px;
+                            border: none;
+                            outline: none;
+                            border-radius: 15px;
+                            font-weight: bold;
+                            background: ${props => props.isDark ? '#213A4A' : '#417493'};
+                            color: #fff;
+                            cursor: pointer;
                         }
                     }
                 }

@@ -5,30 +5,38 @@ import Modal from '../components/modal/Modal';
 import { selectSession } from '../features/slices/sessionSlice';
 import { selectTheme } from '../features/slices/themeSlice';
 import useForm from '../hooks/useForm';
+import useFormatDate from '../hooks/useFormatDate';
 import useImageV2 from '../hooks/useImageV2';
 import useModal from '../hooks/useModal';
-import { getClient } from '../requests/ClientsRequests';
+import { getClient, updateClientStatusRequest } from '../requests/ClientsRequests';
 import { ClientContainer } from '../styles/ClientStyles';
-import { CloseSession } from '../styles/SettingsStyles';
+import editClientValidate from '../utils/validations/editClientValidate';
 
 const Client = () => {
 
     const [client, setClient] = useState();
     const [editMode, setEditMode] = useState(false);
-    const [values, setValues] = useState({
-        
-    })
+    const [values, setValues] = useState({});
 
     const navigate = useNavigate();
     let { id } = useParams();
     let session = useSelector(selectSession);
     let isDark = useSelector(selectTheme);
     const image = useImageV2();
+    const formatDate = useFormatDate();
 
     const [isOpen, openModal, closeModal] = useModal(true, navigate);
 
-    const handleBlocking = () => {
-        closeModal();
+    const handleBlocking = async (status) => {
+        let response = await updateClientStatusRequest(session.id, id, status, session.apikey);
+        if (response.status === 'success') {
+            response = await getClient(session.id, id, session.apikey)
+            setClient(response.datos[0]);
+        }
+    }
+
+    const handleDeleteClient = () => {
+
     }
 
     const handleEditClient = () => {
@@ -48,22 +56,6 @@ const Client = () => {
 
     return (
         <>
-        <Modal
-            isOpen={isOpen}
-            type={'closing'}
-            important={false}
-            background={isDark ? '#181818' : '#EEE'}
-            maxHeight='140px'
-            minHeight='140px'
-        >
-            <CloseSession>
-                <div className="info"><p>¿Seguro que deseas bloquaer a este cliente?</p></div>
-                <div className="buttons">
-                    <button onClick={handleBlocking}>Bloquear</button>
-                    <button className='cancel' onClick={closeModal}>Cancelar</button>
-                </div>
-            </CloseSession>
-        </Modal>
         <Modal
             isOpen={isOpen}
             closeModal={closeModal}
@@ -88,8 +80,11 @@ const Client = () => {
                 <div className="user-container">
                 <form onSubmit={handleSubmit} className="user-info-container">
                     <p className="name">{client.nombre}</p>
-                    <p className="date">Se unió el {client.fechaCreacion.slice(0, 10)}</p>
-                    <p className="birthdate">Fecha de nacimiento: {client.fechaNacimineto.slice(0,10)}</p>
+                    <p className="date">Se unió el {formatDate(client.fechaCreacion).completeDate}</p>
+                    <div className="content-line">
+                        <p className="birthdate">Fecha de nacimiento: </p>
+                        <p>{formatDate(client.fechaNacimineto).completeDate}</p>
+                    </div>
                     <div className="content-line">
                         <label htmlFor="address">Dirección</label>
                         {
@@ -150,12 +145,25 @@ const Client = () => {
                             : <p>{client.password}</p>
                         }
                     </div>
+                    <div className="content-line">
+                        <p>Status</p>
+                        <p>{
+                            client.status === '0'
+                            ? 'Deshabilitado'
+                            : 'Habilitado'
+
+                        }</p>
+                    </div>
                 </form>
                 </div>
                 <div className="buttons">
-                <button className="delete" onClick={openModal}>Bloquear</button>
-                <button className="delete">Eliminar</button>
-                <button className="edit" onClick={() => setEditMode(true)}>Editar</button>
+                {
+                    client.status === '1' ?
+                    <button className="edit" onClick={() => handleBlocking(0)}>Deshabilitar</button> 
+                    : <button className="edit" onClick={() => handleBlocking(1)}>Habilitar</button>
+                }
+                <button className="delete" onClick={() => handleDeleteClient()}>Eliminar</button>
+                {/* <button className="edit" onClick={() => setEditMode(true)}>Editar</button> */}
                 </div>
                 </ClientContainer>
             }

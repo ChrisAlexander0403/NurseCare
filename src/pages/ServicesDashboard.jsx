@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Routes, Route } from 'react-router-dom';
 import Categories from './Categories';
 import Services from './Services';
+import Service from './Service';
 // import ServicesByCategory from './ServicesByCategory';
 
 const ServicesDashboard = () => {
@@ -25,9 +26,10 @@ const ServicesDashboard = () => {
         <article>
             <div className="pages">
                 <Routes>
-                    <Route path="services" exact element={<Services />} />
                     <Route path="categories" exact element={<Categories />} />
-                    <Route path="categories/:id" exact element={<Services />} />
+                    <Route path="categories/:id" exact element={<Services />}>
+                        <Route path=":id" element={<Service />} />
+                    </Route>
                     <Route path="/" exact element={<Navigate to="categories" />} />
                 </Routes>
             </div>

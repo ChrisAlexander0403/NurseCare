@@ -102,6 +102,7 @@ export const ClientsContainer = styled.div`
                     padding: 5px 15px;
                     box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, .2);
                     border-radius: 20px;
+                    background: ${props => props.isDark ? '#282828' : '#FFF'};
 
                     & > .client-header {
                         display: flex;

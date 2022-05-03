@@ -83,6 +83,7 @@ export const HistoryContainer = styled.div`
                     box-shadow: ${props => props.isDark ? '2px 2px 5px 5px rgba(0, 0, 0, .2)' : '2px 2px 5px 5px rgba(0, 0, 0, .1)'};
                     border-radius: 20px;
                     overflow: hidden;
+                    background: ${props => props.isDark ? '#282828' : '#FFF'};
                     
                     & > .info {
                         position: relative;

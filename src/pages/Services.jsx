@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { BiLeftArrowAlt } from 'react-icons/bi';
 import { useSelector } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useParams, useNavigate } from 'react-router-dom';
 import numeral from 'numeral';
 
 import useForm from '../hooks/useForm';
@@ -28,12 +28,14 @@ const Services = () => {
   const [icon, setIcon] = useState("");
   const [isOpen, openModal, closeModal] = useModal(false);
   const [services, setServices] = useState([]);
+  const [service, setService] = useState();
 
   let formRef = useRef(null);
 
   let isDark = useSelector(selectTheme);
   let session = useSelector(selectSession);
   let navigate = useNavigate();
+  let location = useLocation();
 
   const updateUploadedFiles = (files) => setIcon(files);
   const updateUploadedFilesInBase64 = (files) => setValues({ ...values, icon: files });
@@ -52,14 +54,16 @@ const Services = () => {
   useEffect(() => {
     const getServices = async () => {
       let response = await getServicesRequest(session.id, id, session.apikey);
+      console.log(response);
       setServices(response.datos);
     }
     getServices();
     //eslint-disable-next-line
-  }, []);
+  }, [location]);
 
   return (
     <>
+      <Outlet />
       <Modal 
         isOpen={isOpen} 
         closeModal={closeModal} 
@@ -155,15 +159,22 @@ const Services = () => {
                             <p className="title">{service.nombre}</p>
                             <p className="price">{numeral(parseInt(service.costo)).format('$0.00')}</p>
                           </div>
+                          <div className="service-body">
+                            <p>{service.descripcion}</p>
+                          </div>
+                          <button onClick={() => navigate(service.idServicio)}>Detalles</button>
                         </div>
                       </div>
                     );
                   }) }
                 </div>
               </div>
-              <div className="container-box">
+              {
+                service &&
+                <div className="container-box">
 
-              </div>
+                </div>
+              }
             </div>
           </ServicesContainer>
         </article>

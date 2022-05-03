@@ -25,3 +25,16 @@ export const createCatalogXmls = (id, name, image, apikey) => {
                 </soapenv:Body>
             </soapenv:Envelope>`);
   }
+
+export const deleteCategoryXmls = (id, idCategory, apikey) => {
+    return (`<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:demo="http://thenursecare.com/Demo/">
+                <soapenv:Header/>
+                <soapenv:Body>
+                    <demo:RemoveCategoPortNurse soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+                        <iduser_del xsi:type="xsd:int">${id}</iduser_del>
+                        <idcatego xsi:type="xsd:int">${idCategory}</idcatego>
+                        <apikey xsi:type="xsd:string">${apikey}</apikey>
+                    </demo:RemoveCategoPortNurse>
+                </soapenv:Body>
+            </soapenv:Envelope>`);
+}
