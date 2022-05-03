@@ -58,6 +58,10 @@ export const ServiceContainer = styled.div`
             padding: 10px;
             border-bottom: ${props => props.isDark ? '1px solid #666' : '1px solid #999'};
 
+            & > p {
+                text-align: right;
+            }
+
             & > input {
                 padding: 5px 10px;
                 width: 250px;

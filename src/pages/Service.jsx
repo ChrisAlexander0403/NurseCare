@@ -66,9 +66,9 @@ const Service = () => {
         { service && 
             <ServiceContainer isDark={isDark}>
                 <id className="service-image">
-                    <div className="image-container">
+                    <div className="img-container">
                         {
-                            image().exists
+                            image(`http://thenursecare.com/Demo/${service.imagen}`).exists
                             && <img src={`http://thenursecare.com/Demo/${service.imagen}`} alt="" />
                         }
                     </div>
