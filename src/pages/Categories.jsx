@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef } from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
@@ -6,14 +7,16 @@ import Modal from '../components/modal/Modal';
 import { selectSession } from '../features/slices/sessionSlice';
 import { selectTheme } from '../features/slices/themeSlice';
 import useModal from '../hooks/useModal';
-import { CategoriesContainer, Create } from '../styles/CategoriesStyles';
+import { CategoriesContainer, Create, CreateButton } from '../styles/CategoriesStyles';
 import { AiOutlineMedicineBox } from 'react-icons/ai';
 import { RiDeleteBackFill } from 'react-icons/ri';
 import InputFile from '../components/inputProfile/InputFile';
 import useForm from '../hooks/useForm';
-import { createCategory, deleteCategoryRequest, getCategories } from '../requests/CategoriesRequests';
 import categoryValidate from '../utils/validations/categoryValidate';
 import { Confirm } from '../styles/UsersStyles';
+import { createCatalogXmls, deleteCategoryXmls, getCatalogsXmls } from '../XMLRequests/catalogsRequests';
+import useXMLRequest from '../hooks/useXMLRequest';
+import useWindowsDimensions from '../hooks/useWindowsDimensions';
 // import ContextMenu from '../components/contextMenu/ContextMenu';
 
 const Categories = () => {
@@ -26,12 +29,15 @@ const Categories = () => {
   const [icon, setIcon] = useState("");
   const [options, setOptions] = useState([]);
   const [delitingCategory, setDelitingCategory] = useState();
+  const [device, setDevice] = useState('');
   
   let [isOpen, openModal, closeModal] = useModal(false);
   const [confirmIsOpen, openConfirmModal, closeConfirmModal] = useModal(false);
   let session = useSelector(selectSession);
   let isDark = useSelector(selectTheme);
   let navigate = useNavigate();
+  const request = useXMLRequest();
+  let { height, width } = useWindowsDimensions();
 
   let formRef = useRef(null);
 
@@ -39,18 +45,22 @@ const Categories = () => {
   const updateUploadedFilesInBase64 = (files) => setValues({ ...values, image: files });
 
   const submitForm = async ({ name, image }) => {
-    let response = await createCategory(session.id, name, image, session.apikey)
+    let xmls = createCatalogXmls(session.id, name, image, session.apikey);
+    let response = await request(xmls, 'InsertCategoNurseReturn')
     if(response.status === 'success') {
-      let response = await getCategories(session.id, session.apikey);
+      xmls = getCatalogsXmls(session.id, session.apikey);
+      response = await request(xmls, 'GetCategosNurseReturn');
       setCatalogs(response.datos);
     }
     closeModal();
   }
 
   const handleDelete = async (id) => {
-    let response = await deleteCategoryRequest(session.id, id, session.apikey);
+    let xmls = deleteCategoryXmls(session.id, id, session.apikey);
+    let response = await request(xmls, 'RemoveCategoPortNurseReturn');
     if (response.status === 'success') {
-      response = await getCategories(session.id, session.apikey);
+      xmls = getCatalogsXmls(session.id, session.apikey);
+      response = await request(xmls, 'GetCategosNurseReturn');
       setCatalogs(response.datos);
       closeConfirmModal();
     }
@@ -60,9 +70,10 @@ const Categories = () => {
 
   useEffect(() => {
     const getCatalogs = async () => {
-      let response = await getCategories(session.id, session.apikey);
+      let xmls = getCatalogsXmls(session.id, session.apikey);
+      let response = await request(xmls, 'GetCategosNurseReturn');
       setCatalogs(response.datos);
-      console.log(response)
+      console.log(response);
     }
     getCatalogs();
     //eslint-disable-next-line
@@ -70,7 +81,21 @@ const Categories = () => {
 
   useEffect(() => {
     setOptions(document.querySelectorAll('.catalog'));
-  }, []);
+    // (() => {
+    //   const ua = navigator.userAgent;
+    //   if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+    //     setDevice("tablet");
+    //   }
+    //   if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)
+    //   ) {
+    //     setDevice("mobile");
+    //   }
+    //   setDevice("desktop");
+    // })();
+    if (width <= 480) {
+      setDevice('mobile');
+    }
+  }, [width]);
 
   return (
     <>
@@ -104,7 +129,7 @@ const Categories = () => {
                 type="text" 
                 name="name" 
                 id="name" 
-                placeholder="Servicio" 
+                placeholder="Categoría" 
                 value={values.name}
                 onChange={handleChange}
               />
@@ -143,6 +168,12 @@ const Categories = () => {
         </Confirm>
       </Modal>
       <CategoriesContainer isDark={isDark}>
+        { device === 'mobile' &&
+          <CreateButton isDark={isDark} onClick={openModal}>
+            <AiOutlinePlus style={{ fontSize: '24px' }} />
+            {/* <p>Crear &nbsp;</p> */}
+          </CreateButton>
+        }
         <aside>
             <section>
               <div className='options'>

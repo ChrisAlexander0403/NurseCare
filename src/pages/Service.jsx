@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -8,11 +9,13 @@ import { selectTheme } from '../features/slices/themeSlice';
 import useForm from '../hooks/useForm';
 import useImageV2 from '../hooks/useImageV2';
 import useModal from '../hooks/useModal';
-import { deleteServiceRequest, getServiceRequest } from '../requests/ServicesRequests';
 import { ServiceContainer } from '../styles/ServiceStyles';
 import serviceValidate from '../utils/validations/serviceValidate';
 import numeral from 'numeral';
 import useFormatDate from '../hooks/useFormatDate';
+import useXMLRequest from '../hooks/useXMLRequest';
+import { deleteServiceXmls, getServiceXmls } from '../XMLRequests/servicesRequests';
+import useWindowsDimensions from '../hooks/useWindowsDimensions';
 
 const Service = () => {
 
@@ -23,6 +26,7 @@ const Service = () => {
     });
     const [service, setService] = useState();
     const [editMode, setEditMode] = useState(false);
+    const [device, setDevice] = useState('');
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -30,6 +34,8 @@ const Service = () => {
     let isDark = useSelector(selectTheme);
     const image = useImageV2();
     const formatDate = useFormatDate();
+    const request = useXMLRequest();
+    let { height, width } = useWindowsDimensions();
 
     const [isOpen, openModal, closeModal] = useModal(true, navigate);
 
@@ -38,7 +44,8 @@ const Service = () => {
     }
 
     const handleDelete = async () => {
-        let response = await deleteServiceRequest(session.id, id, session.apikey);
+        let xmls = deleteServiceXmls(session.id, id, session.apikey);
+        let response = await request(xmls, 'RemoveServicioPortNurseReturn');
         if (response.status === 'success') navigate(-1);
     }
 
@@ -46,13 +53,30 @@ const Service = () => {
 
     useEffect(() => {
         (async () => {
-            let response = await getServiceRequest(session.id, id, session.apikey);
+            let xmls = getServiceXmls(session.id, id, session.apikey);
+            let response = await request(xmls, 'GetServiceByIdNurseReturn');
             setService(response.datos[0]);
         })();
 
         //eslint-disable-next-line
     }, []);
-    
+
+    useEffect(() => {
+        // (() => {
+        //   const ua = navigator.userAgent;
+        //   if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+        //     setDevice("tablet");
+        //   }
+        //   if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)
+        //   ) {
+        //     setDevice("mobile");
+        //   }
+        //   setDevice("desktop");
+        // })();
+        if (width <= 480) {
+        setDevice('mobile');
+        }
+    }, [width]);
 
   return (
     <Modal
@@ -61,7 +85,7 @@ const Service = () => {
         type='close'
         background={isDark ? '#181818' : '#EEE'}
         color='#417493'
-        minWidth='460px'
+        minWidth={device === 'mobile' ? '100%' : '380px'}
     >
         { service && 
             <ServiceContainer isDark={isDark}>

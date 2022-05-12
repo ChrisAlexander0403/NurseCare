@@ -1,11 +1,15 @@
-import React/*, { useEffect, useRef }*/ from 'react';
-import { useSelector, /*useDispatch*/ } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { selectSession } from '../../features/slices/sessionSlice';
-import { selectTheme, /*switchTheme*/ } from '../../features/slices/themeSlice';
-import { Nav/*, Switch, ThemeDiv, Sun, Moon*/ } from './NavBarStyles';
+import { selectTheme } from '../../features/slices/themeSlice';
+import { Nav } from './NavBarStyles';
+import { AiOutlineMenu } from 'react-icons/ai';
+import { CgClose } from 'react-icons/cg';
 
 const NavBar = () => {
+
+    const [click, setClick] = useState(false);
 
     let navigate = useNavigate();
     let session = useSelector(selectSession);
@@ -15,7 +19,9 @@ const NavBar = () => {
 
     const redirect = () => {
         navigate('/settings/account');
+        setClick(false);
     }
+    const closeMobile = () => setClick(false);
 
     // useEffect(() => {
     //     switchRef.current.addEventListener('click', () => {
@@ -27,28 +33,17 @@ const NavBar = () => {
     return (
         <Nav isDark={isDark}>
             <Link to="/" className='logo'><img src="assets/logo.png" alt="" /></Link>
-            <ul>
+            <div className="mobile" onClick={() => setClick(!click)}>
+                { click ? <CgClose /> : <AiOutlineMenu /> }
+            </div>
+            <ul className={click ? 'active' : null}>
                 {/* <li><NavLink to="/">Inicio</NavLink></li> */}
-                <li><NavLink to="/dashboard">Dashboard</NavLink></li>
-                <li><NavLink to="/services">Servicios</NavLink></li>
-                <li><NavLink to="/settings">Configuración</NavLink></li>
+                <li><NavLink to="/dashboard" onClick={closeMobile}>Dashboard</NavLink></li>
+                <li><NavLink to="/services" onClick={closeMobile}>Servicios</NavLink></li>
+                <li><NavLink to="/settings" onClick={closeMobile}>Configuración</NavLink></li>
                 {
                     session && <li><p onClick={redirect} className="user">{session.name}</p></li>
                 }
-                {/* <li>
-                    <ThemeDiv>
-                        { 
-                            !isDark ? <Sun />
-                            : <Moon />
-                        }
-                        <Switch 
-                            type="checkbox" 
-                            name=""
-                            ref={switchRef}
-                            defaultChecked={isDark && true}
-                        />
-                    </ThemeDiv>
-                </li> */}
             </ul>
         </Nav>
     );

@@ -14,10 +14,12 @@ import useModal from '../hooks/useModal';
 import useForm from '../hooks/useForm';
 import userValidate from '../utils/validations/userValidate';
 import { selectTheme } from '../features/slices/themeSlice';
-import { createUserRequest, deleteUserRequest, getUsersRequest } from '../requests/UserRequests';
 import { Arrow, DropdownContent, DropdownList } from '../styles/DropdownListStyles';
 import InputFile from '../components/inputProfile/InputFile';
 import useFormatDate from '../hooks/useFormatDate';
+import { createUserXmls, deleteUserXmls, getAllUsersXmls } from '../XMLRequests/userRequests';
+import useXMLRequest from '../hooks/useXMLRequest';
+import useWindowsDimensions from '../hooks/useWindowsDimensions';
 
 const userTypes = [
   {
@@ -44,7 +46,9 @@ const Users = () => {
   const [isActive, setIsActive] = useState(false);
   const [selected, setSelected] = useState('Tipo de usuario');
   const [delitingUser, setDelitingUser] = useState({});
+  // eslint-disable-next-line no-unused-vars
   const [icon, setIcon] = useState("");
+  const [device, setDevice] = useState('');
   // const [password, setPassword] = useState('');
 
   let session = useSelector(selectSession);
@@ -52,15 +56,19 @@ const Users = () => {
   let navigate = useNavigate();
   let formatDate = useFormatDate();
   let location = useLocation();
+  const request = useXMLRequest();
+  let { height, width } = useWindowsDimensions();
 
   const [isOpen, openModal, closeModal] = useModal(false);
   const [confirmIsOpen, openConfirmModal, closeConfirmModal] = useModal(false);
   
   const handleCreateUser = async ({ picture, firstname, lastname, email, password, rol }) => {    
-    let response = await createUserRequest(session.id, picture, firstname, lastname, email, password, rol, session.apikey);
+    let xmls = createUserXmls(session.id, picture, firstname, lastname, email, password, rol, session.apikey);
+    let response = await request(xmls, 'InsertUserPortNurseReturn');
     console.log(response);
     if (response.status === 'success') {
-      response = await getUsersRequest(session.id, session.apikey);
+      xmls = getAllUsersXmls(session.id, session.apikey);
+      response = await request(xmls, 'GetUserNurseReturn');
       setUsers(response.datos);
       closeModal();
     }
@@ -68,9 +76,11 @@ const Users = () => {
 
   const handleDeleteUser = async (user) => {
     // if (password) return;
-    let response = await deleteUserRequest(session.id, user, session.apikey);
+    let xmls = deleteUserXmls(session.id, user, session.apikey);
+    let response = await request(xmls, 'RemoveUserPortNurseReturn');
     if (response.status === 'success') {
-      response = await getUsersRequest(session.id, session.apikey);
+      xmls = getAllUsersXmls(session.id, session.apikey);
+      response = await request(xmls, 'GetUserNurseReturn');
       setUsers(response.datos);
       closeConfirmModal();
     }
@@ -83,11 +93,29 @@ const Users = () => {
 
   useEffect(() => {
     (async () => {
-      let response = await getUsersRequest(session.id, session.apikey);
+      let xmls = getAllUsersXmls(session.id, session.apikey);
+      let response = await request(xmls, 'GetUserNurseReturn');
       setUsers(response.datos);
     })();
     //eslint-disable-next-line
   }, [location]);
+
+  useEffect(() => {
+    // (() => {
+    //   const ua = navigator.userAgent;
+    //   if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+    //     setDevice("tablet");
+    //   }
+    //   if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)
+    //   ) {
+    //     setDevice("mobile");
+    //   }
+    //   setDevice("desktop");
+    // })();
+    if (width <= 480) {
+      setDevice('mobile');
+    }
+  }, [width]);
   
   
   return (
@@ -248,11 +276,11 @@ const Users = () => {
                 <div className="buttons">
                   <button 
                     onClick={() => navigate(user.idUser)}
-                  ><MdContactPage style={{ fontSize: '18px', marginRight: '8px' }} /> Detalles</button>
+                  ><MdContactPage style={{ fontSize: '18px', marginRight: device !== 'mobile' ? '8px' : '0' }} /> {device !== 'mobile' && 'Detalles'}</button>
                   <button 
                     className="delete"
                     onClick={() => {setDelitingUser(user); openConfirmModal();}}
-                  ><AiFillDelete style={{ fontSize: '18px', marginRight: '8px' }} /> Eliminar</button>
+                  ><AiFillDelete style={{ fontSize: '18px', marginRight: device !== 'mobile' ? '8px' : '0' }} /> {device !== 'mobile' && 'Eliminar'}</button>
                 </div>
               </div>
             )

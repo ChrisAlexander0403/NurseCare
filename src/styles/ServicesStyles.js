@@ -13,6 +13,7 @@ export const ServicesStyles = styled.main`
                 width: 100%;
                 height: 25px;
                 margin-bottom: 25px;
+                padding: 0 20px;
 
                 & > .go-back {
                     display: flex;
@@ -52,6 +53,11 @@ export const ServicesStyles = styled.main`
                     border: none;
                     outline: none;
 
+                    @media screen and (max-width: 480px) {
+                        width: 45px;
+                        visibility: hidden;
+                    }
+
                     &:hover {
                         background: ${props => props.isDark ? '#213A4A' : '#417493'};
                         color: #eee;
@@ -69,6 +75,94 @@ export const ServicesContainer = styled.div`
         display: flex;
         justify-content: space-evenly;    
         margin: 0 30px; 
+
+        @media screen and (max-width: 480px) {
+            margin: 0;
+        }
+
+        & > .services {
+            width: 100%;
+            height: 100%;
+            padding: 0 25px;
+
+            & > .service {
+                position: relative;
+                display: flex;
+                width: 100%;
+                height: 90px;
+                padding: 0;
+                margin-bottom: 15px;
+                box-shadow: ${props => props.isDark ? '2px 2px 5px 5px rgba(0, 0, 0, .2)' : '2px 2px 5px 5px rgba(0, 0, 0, .1)'};
+                border-radius: 20px;
+                overflow: hidden;
+
+                & > .img-container {
+                    width: 90px;
+                    height: 90px;
+
+                    & > img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        object-position: center;
+                    }
+
+                }
+
+                & > .service-info {
+                    position: relative;
+                    width: 320px;
+                    height: 90px;
+                    padding: 5px 10px;
+
+                    @media screen and (max-width: 480px) {
+                        width: calc(100% - 90px);
+                    }
+
+                    & > .service-header {
+                        display: flex;
+                        justify-content: space-between;
+                        width: 100%;
+                        font-size: 16px;
+
+                        & > .title {
+                            font-weight: bold;
+                            color: #417493;
+                        }
+
+                        & > .price {
+                            color: #666;
+                        }
+                    }
+
+                    & > .service-body {
+                        & > p {
+                            font-size: 14px;
+                            color: ${props => props.isDark ? '#999' : '#666'};
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                    }
+
+                    & > button {
+                        position: absolute;
+                        bottom: 10px;
+                        right: 15px;
+                        display: flex;
+                        align-items: center;
+                        padding: 4px 10px;
+                        border: none;
+                        outline: none;
+                        border-radius: 15px;
+                        font-weight: bold;
+                        background: ${props => props.isDark ? '#213A4A' : '#417493'};
+                        color: #fff;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
 
         & > .container-box {
             position: relative;

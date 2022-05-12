@@ -13,6 +13,7 @@ export const UsersContainer = styled.div`
             align-items: center;
             width: 90px;
             padding: 5px 0;
+            margin-left: 20px;
             border-radius: 20px;
             box-shadow: ${props => props.isDark ? '2px 2px 5px 5px rgba(0, 0, 0, .1)' : '2px 2px 5px 5px rgba(0, 0, 0, .05)'};
             background: ${props => props.isDark ? '#282828' : '#FFF'};
@@ -33,6 +34,10 @@ export const UsersContainer = styled.div`
         flex-direction: column;
         justify-content: space-evenly;
         margin: 50px;
+
+        @media screen and (max-width: 480px) {
+            margin: 30px 20px;
+        }
 
         & > .user {
             position: relative;

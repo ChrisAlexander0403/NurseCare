@@ -1,5 +1,24 @@
 main {
     display: flex;
+
+    & > .second-menu {
+        display: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        outline: none;
+        color: #FFF;
+
+        @media screen and (max-width: 480px) {
+            display: block;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 20;
+        }
+    }
+
     aside {
         .toolbar {
             position: relative;
@@ -7,6 +26,11 @@ main {
             width: 250px;
             height: calc(100vh - 60px);//Dark mode #213A4A
             transition: all .3s ease;
+
+            @media screen and (max-width: 1080px) {
+                position: fixed;
+                left: -100%;
+            }
 
             .title {
                 color: #fff;
@@ -56,6 +80,10 @@ main {
             height: calc(100vh - 60px);
             padding: 25px 50px;
             overflow: auto;
+
+            @media screen and (max-width: 480px) {
+                padding: 25px 0;
+            }
         }
     }
 }

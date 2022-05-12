@@ -3,7 +3,7 @@ import { FaSun, FaMoon } from 'react-icons/fa';
 
 export const Nav = styled.nav`
     position: relative;
-    z-index: 10;
+    z-index: 21;
     display: flex;
     width: 100%;
     height: 60px;
@@ -13,6 +13,20 @@ export const Nav = styled.nav`
     box-shadow: ${props => props.isDark ? '2px 0 10px 5px #111' : '2px 0 10px 5px #ddd'};
     background: ${props => props.isDark ? '#181818' : '#eee'};
     transition: all .3s ease;
+
+    & > .mobile {
+        display: none;
+        color: #417493;
+
+        @media screen and (max-width: 1080px){
+            display: block;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+    }
 
     & > a {
         margin-left: 50px;
@@ -27,22 +41,53 @@ export const Nav = styled.nav`
             height: 100%;
             object-fit: contain;
         }
+
+        @media screen and (max-width: 786px) {
+            margin-left: 0;
+        }
     }
 
-    & ul{
+    & > ul{
+        position: relative;
         display: flex;
         align-items: center;
+        margin-right: 24px;
+        z-index: 12;
+        transition: left 0.5s ease;
+        background: ${props => props.isDark ? '#181818' : '#EEE'};
+
+        @media screen and (max-width: 1080px){
+            flex-direction: column;
+            width: 100%;
+            height: calc(100vh - 60px);
+            position: fixed;
+            top: 60px;
+            left: -100%;
+            &.active{
+                left: 0;
+            }
+        }
+
+        @media screen and (orientation: landscape) and (max-width: 1080px){
+            height: 80vh;
+            padding-bottom: 20px;
+        }
     }
 
-    & ul li{
+    & > ul > li{
         list-style: none;
-        margin: 0 10px;
+        margin: 10px;
+
+        @media screen and (max-width: 786px) {
+            line-height: 30px;
+        }
     }
 
-    & ul li a{
+    & > ul > li > a{
         padding: 5px 10px;
         border-radius: 10px;
         color: ${props => props.isDark ? '#eee' : '#242424'};
+        
         &:hover {
             color: #417493;
         }
@@ -66,16 +111,8 @@ export const ThemeDiv = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 75px; 
+    width: 90px; 
     user-select: none;
-    
-    @media screen and (max-width: 1080px){
-        margin: 1rem 0 5rem 0;
-    }
-
-    @media screen and (max-width: 480px){
-        width: 90px;
-    }
 `;
 
 export const Switch = styled.input`

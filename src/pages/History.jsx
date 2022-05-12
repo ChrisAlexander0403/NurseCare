@@ -9,8 +9,9 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { selectSession } from '../features/slices/sessionSlice';
 import { selectTheme } from '../features/slices/themeSlice';
 import useFormatDate from '../hooks/useFormatDate';
-import { getOrdersRequest } from '../requests/OrdersRequests';
 import { HistoryContainer } from '../styles/HistoryStyles';
+import useXMLRequest from '../hooks/useXMLRequest';
+import { getOrdersXmls } from '../XMLRequests/ordersRequests';
 
 const History = () => {
 
@@ -21,6 +22,7 @@ const History = () => {
   let isDark = useSelector(selectTheme);
   let session = useSelector(selectSession);
   let formatDate = useFormatDate();
+  const request = useXMLRequest();
 
   const orderArr = (unorderArr) => {
     let orderedArr = [];
@@ -32,11 +34,12 @@ const History = () => {
   }
 
   useEffect(() => {
-    const getOrders = async () => {
-      let response = await getOrdersRequest(session.id, session.apikey);
+    (async () => {
+      let xmls = getOrdersXmls(session.id, session.apikey);
+      let response = await request(xmls, 'GetServicesSolNurseReturn');
       setOrders(orderArr(response.datos));
     }
-    getOrders();
+    )();
     // eslint-disable-next-line
   }, []);
 

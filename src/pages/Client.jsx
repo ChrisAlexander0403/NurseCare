@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -8,15 +9,18 @@ import useForm from '../hooks/useForm';
 import useFormatDate from '../hooks/useFormatDate';
 import useImageV2 from '../hooks/useImageV2';
 import useModal from '../hooks/useModal';
-import { getClient, updateClientStatusRequest } from '../requests/ClientsRequests';
+import useXMLRequest from '../hooks/useXMLRequest';
 import { ClientContainer } from '../styles/ClientStyles';
 import editClientValidate from '../utils/validations/editClientValidate';
+import { getClientXmls, updateClientStatusXmls } from '../XMLRequests/clientRequests';
+import useWindowsDimensions from '../hooks/useWindowsDimensions';
 
 const Client = () => {
 
     const [client, setClient] = useState();
     const [editMode, setEditMode] = useState(false);
     const [values, setValues] = useState({});
+    const [device, setDevice] = useState('');
 
     const navigate = useNavigate();
     let { id } = useParams();
@@ -24,13 +28,17 @@ const Client = () => {
     let isDark = useSelector(selectTheme);
     const image = useImageV2();
     const formatDate = useFormatDate();
+    const request = useXMLRequest();
+    let { height, width } = useWindowsDimensions();
 
     const [isOpen, openModal, closeModal] = useModal(true, navigate);
 
     const handleBlocking = async (status) => {
-        let response = await updateClientStatusRequest(session.id, id, status, session.apikey);
+        let xmls = updateClientStatusXmls(session.id, id, status, session.apikey);
+        let response = await request(xmls, 'UpdateStatusClientNurseReturn');
         if (response.status === 'success') {
-            response = await getClient(session.id, id, session.apikey)
+            xmls = getClientXmls(session.id, id, session.apikey);
+            response = await request(xmls, 'GetClientbyIdNurseReturn')
             setClient(response.datos[0]);
         }
     }
@@ -47,12 +55,29 @@ const Client = () => {
 
     useEffect(() => {
         (async () => {
-            let response = await getClient(session.id, id, session.apikey)
+            let xmls = getClientXmls(session.id, id, session.apikey);
+            let response = await request(xmls, 'GetClientbyIdNurseReturn')
             setClient(response.datos[0]);
         })();
         //eslint-disable-next-line
     }, []);
     
+    useEffect(() => {
+        // (() => {
+        //   const ua = navigator.userAgent;
+        //   if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+        //     setDevice("tablet");
+        //   }
+        //   if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)
+        //   ) {
+        //     setDevice("mobile");
+        //   }
+        //   setDevice("desktop");
+        // })();
+        if (width <= 480) {
+          setDevice('mobile');
+        }
+    }, [width]);
 
     return (
         <>
@@ -62,7 +87,7 @@ const Client = () => {
             type='close'
             background={isDark ? '#181818' : '#EEE'}
             color='#417493'
-            minWidth='460px'
+            minWidth={device === 'mobile' ? '100%' : '460px'}
         >
             {
                 client &&

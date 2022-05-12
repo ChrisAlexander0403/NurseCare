@@ -10,11 +10,13 @@ import { selectSession } from '../features/slices/sessionSlice';
 import { selectTheme } from '../features/slices/themeSlice';
 import useImageV2 from '../hooks/useImageV2';
 import useModal from '../hooks/useModal';
-import { EditUserRequest, getUserRequest, updateUserStatusRequest } from '../requests/UserRequests';
 import { Arrow, DropdownContent, DropdownList } from '../styles/DropdownListStyles';
 import { UserContainer } from '../styles/UserStyles';
 import useForm from '../hooks/useForm';
 import editUserValidate from '../utils/validations/editUserValidate';
+import useXMLRequest from '../hooks/useXMLRequest';
+import { editUserXmls, getUserXmls, updateUserStatusXmls } from '../XMLRequests/userRequests';
+import useWindowsDimensions from '../hooks/useWindowsDimensions';
 
 const userTypes = [
     {
@@ -39,20 +41,26 @@ const User = () => {
     const [user, setUser] = useState();
     const [editMode, setEditMode] = useState(false);
     const [isActive, setIsActive] = useState(false);
-  const [selected, setSelected] = useState('');
+    const [selected, setSelected] = useState('');
+    const [device, setDevice] = useState('');
 
     const { id } = useParams();
     const navigate = useNavigate();
     let session = useSelector(selectSession);
     let isDark = useSelector(selectTheme);
     const image = useImageV2();
+    const request = useXMLRequest();
+    let { height, width } = useWindowsDimensions();
 
+    // eslint-disable-next-line no-unused-vars
     const [isOpen, openModal, closeModal] = useModal(true, navigate);
 
     const handleUpdateStatus = async (status) => {
-        let response = await updateUserStatusRequest(session.id, user.email, status, session.apikey );
+        let xmls = updateUserStatusXmls(session.id, user.email, status, session.apikey);
+        let response = await request(xmls, 'UpdateStatusUserNurseReturn');
         if (response.status === 'success') {
-            response = await getUserRequest(session.id, id, session.apikey);
+            xmls = getUserXmls(session.id, id, session.apikey);
+            response = await request(xmls, 'GetUserByIdNurseReturn');
             setUser(response.datos[0]);
         }
     }
@@ -70,23 +78,44 @@ const User = () => {
     }
 
     const handleEditUser = async  ({ name, email, password, rol }) => {
-        let response = await EditUserRequest(session.id, name, email, password, rol, session.apikey);
+        let xmls = editUserXmls(session.id, name, email, password, rol, session.apikey);
+        let response = await request(xmls, 'EditUserPortNurseReturn');
         if (response.status === 'success') {
-            response = await getUserRequest(session.id, id, session.apikey);
+            xmls = getUserXmls(session.id, id, session.apikey);
+            response = await request(xmls, 'GetUserByIdNurseReturn');
             setUser(response.datos[0]);
             setEditMode(false);
         }
     }
 
+    // eslint-disable-next-line no-unused-vars
     const { handleChange, handleSubmit, errors } = useForm(values, setValues, handleEditUser, editUserValidate);
     
     useEffect(() => {
         (async () => {
-            let response = await getUserRequest(session.id, id, session.apikey);
+            let xmls = getUserXmls(session.id, id, session.apikey);
+            let response = await request(xmls, 'GetUserByIdNurseReturn');
             setUser(response.datos[0]);
         })();
         //eslint-disable-next-line
     }, []);
+
+    useEffect(() => {
+        // (() => {
+        //   const ua = navigator.userAgent;
+        //   if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+        //     setDevice("tablet");
+        //   }
+        //   if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)
+        //   ) {
+        //     setDevice("mobile");
+        //   }
+        //   setDevice("desktop");
+        // })();
+        if (width <= 480) {
+          setDevice('mobile');
+        }
+      }, [width]);
 
     return (
         <Modal
@@ -95,7 +124,7 @@ const User = () => {
             type='close'
             background={isDark ? '#181818' : '#EEE'}
             color='#417493'
-            minWidth='460px'
+            minWidth={device === 'mobile' ? '100%' : '460px'}
         >
             {user && 
                 <UserContainer isDark={isDark}>

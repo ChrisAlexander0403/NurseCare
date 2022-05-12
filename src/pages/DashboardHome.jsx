@@ -3,11 +3,12 @@ import numeral from 'numeral';
 
 import PieComponent from '../components/charts/PieComponent';
 import BarComponent from '../components/charts/BarComponent';
-import { getOrdersRequest } from '../requests/OrdersRequests';
 import { useSelector } from 'react-redux';
 import { selectSession } from '../features/slices/sessionSlice';
 import { DashboardHomeContainer } from '../styles/DashboardHomeStyles';
 import { selectTheme } from '../features/slices/themeSlice';
+import useXMLRequest from '../hooks/useXMLRequest';
+import { getOrdersXmls } from '../XMLRequests/ordersRequests';
 
 const DashboardHome = () => {
 
@@ -16,6 +17,7 @@ const DashboardHome = () => {
 
   let session = useSelector(selectSession);
   let isDark = useSelector(selectTheme);
+  const request = useXMLRequest();
 
   // const getFiveMostSoldProducts = (array) => {
   //   if (array.length > 0) {
@@ -50,13 +52,13 @@ const DashboardHome = () => {
   }
 
   useEffect(() => {
-    const getOrders = async () => {
-      let response = await getOrdersRequest(session.id, session.apikey);
+    (async () => {
+      let xmls = getOrdersXmls(session.id, session.apikey);
+      let response = await request(xmls, 'GetServicesSolNurseReturn');
       console.log(response.datos)
       setOrders(orderArr(response.datos));
       getTotalRevenue(response.datos);
-    }
-    getOrders();
+    })();
     // eslint-disable-next-line
   }, []);
 

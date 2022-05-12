@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 import { selectSession } from '../features/slices/sessionSlice';
 import { selectTheme } from '../features/slices/themeSlice';
 import useFormatDate from '../hooks/useFormatDate';
-import { getUserRequest } from '../requests/UserRequests';
+import useXMLRequest from '../hooks/useXMLRequest';
 import { AccountContainer } from '../styles/AccountStyles';
+import { getUserXmls } from '../XMLRequests/userRequests';
 
 const Account = () => {
 
@@ -15,18 +16,14 @@ const Account = () => {
   let isDark = useSelector(selectTheme);
 
   const formatDate = useFormatDate();
+  const request = useXMLRequest();
 
   useEffect(() => {
-
-    const getUser = async () => {
-      let response = await getUserRequest(session.id, session.id, session.apikey);
-      setUser(response.datos[0]);
-    }
-    getUser();
-  
-    return () => {
-    }
-
+    (async () => {
+        let xmls = getUserXmls(session.id, session.id, session.apikey);
+        let response = await request(xmls, 'GetUserByIdNurseReturn');
+        setUser(response.datos[0]);
+    })();
     //eslint-disable-next-line
   }, []);
 

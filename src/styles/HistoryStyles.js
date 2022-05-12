@@ -5,6 +5,7 @@ export const HistoryContainer = styled.div`
 
     & > h1 {
         color: #417493;
+        margin-left: 20px;
     }
 
     & > .main-container {
@@ -91,6 +92,10 @@ export const HistoryContainer = styled.div`
                         width: 80%;
                         padding: 5px 15px;
 
+                        @media screen and (max-width: 480px) {
+                            width: 75%;
+                        }
+
                         & > .header {
                             display: flex;
                             justify-content: space-between;
@@ -143,6 +148,10 @@ export const HistoryContainer = styled.div`
                         justify-content: center;
                         width: 20%;
                         font-size: 22px;
+
+                        @media screen and (max-width: 480px) {
+                            width: 25%;
+                        }
 
                         & > p {
                             font-size: 12px;

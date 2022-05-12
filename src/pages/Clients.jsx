@@ -5,9 +5,8 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { getClientsXmls } from '../XMLRequests/clientRequests';
 import { selectSession } from '../features/slices/sessionSlice';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
-import XMLParser from 'react-xml-parser';
 import { selectTheme } from '../features/slices/themeSlice';
+import useXMLRequest from '../hooks/useXMLRequest';
 
 const Clients = () => {
 
@@ -18,32 +17,15 @@ const Clients = () => {
   let isDark = useSelector(selectTheme);
   const navigate = useNavigate();
   let location = useLocation();
+  const request = useXMLRequest();
 
   useEffect(() => {
-
-    let xmls = getClientsXmls(session.id, session.apikey);
-
-    const getClients = async () => {
-      try {
-        const data = await axios.post('http://thenursecare.com/Demo/WSPortalDemo.php?wsdl', xmls, 
-        {withCredentials:false}, {
-          headers: {
-            'Content-Type': 'text/xml'
-          }, 
-        });
-        let xml = new XMLParser().parseFromString(data.data);
-        let GetClients = xml.getElementsByTagName('GetClientNurseReturn');
-        let response = JSON.parse(GetClients[0].value);
-        console.log(response.datos)
-        setClients(response.datos);
-      } catch(error) {
-        console.log(error);
-      }
-    }
     
-    getClients();
-    
-    console.log(clients);
+    (async () => {
+      let xmls = getClientsXmls(session.id, session.apikey);
+      let response = await request(xmls, 'GetClientNurseReturn');
+      setClients(response.datos);
+    })();
     //eslint-disable-next-line
   }, [location]);
 

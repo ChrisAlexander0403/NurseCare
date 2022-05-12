@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Route, Routes, NavLink, Navigate } from 'react-router-dom';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,12 +13,14 @@ import Modal from '../components/modal/Modal';
 import { CloseSession } from '../styles/SettingsStyles';
 import { selectTheme } from '../features/slices/themeSlice';
 import User from './User';
+import { AiOutlinePlus } from 'react-icons/ai';
 
 const Settings = () => {
 
+    const [isActive, setIsActive] = useState(false);
+    
     const [isOpen, openModal, closeModal] = useModal();
     const dispatch = useDispatch();
-
     let isDark = useSelector(selectTheme);
 
     const handleLogout = () => {
@@ -44,25 +46,44 @@ const Settings = () => {
         </CloseSession>
     </Modal>
     <main>
+        <button 
+            className='second-menu' 
+            onClick={() => setIsActive(!isActive)}
+            style={{ background: isDark ? '#213A4A' : '#417493' }}
+        >
+            <AiOutlinePlus 
+                style={{ 
+                    fontSize: '22px',
+                    transform: isActive ? 'rotate(405deg)' : 'rotate(0)',
+                    transition: '.3s'
+                }}
+            />
+        </button>
         <aside>
-            <div className="toolbar" style={{ background: isDark ? '#213A4A' : '#417493' }}>
+            <div 
+                className="toolbar" 
+                style={{ 
+                    background: isDark ? '#213A4A' : '#417493',
+                    left: isActive ? '0' : '-100%'
+                }}
+            >
                 <p className="title">Configuración</p>
                 <div className="options">
                     <ul>
                         <li>
-                            <NavLink to="main">General</NavLink>
+                            <NavLink to="main" onClick={() => setIsActive(false)}>General</NavLink>
                         </li>
                         {/* <li>
                             <NavLink to="interface">Interfaz de aplicación</NavLink>
                         </li> */}
                         <li>
-                            <NavLink to="users">Usuarios</NavLink>
+                            <NavLink to="users" onClick={() => setIsActive(false)}>Usuarios</NavLink>
                         </li>
                         <li>
-                            <NavLink to="account">Cuenta</NavLink>
+                            <NavLink to="account" onClick={() => setIsActive(false)}>Cuenta</NavLink>
                         </li>
                         <li>
-                            <button onClick={openModal}><FaSignOutAlt />&nbsp;&nbsp;&nbsp;Cerrar sesión</button>
+                            <button onClick={() => {setIsActive(false); openModal()}}><FaSignOutAlt />&nbsp;&nbsp;&nbsp;Cerrar sesión</button>
                         </li>
                     </ul>
                 </div>

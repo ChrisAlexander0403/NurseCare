@@ -5,6 +5,7 @@ export const OrdersContainer = styled.div`
 
     & > h1 {
         color: #417493;
+        margin-left: 20px;
     }
 
     & > .main-container {

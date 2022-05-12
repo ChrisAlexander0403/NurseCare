@@ -7,11 +7,12 @@ import { selectTheme } from '../features/slices/themeSlice';
 import useModal from '../hooks/useModal';
 import { OrderContainer } from '../styles/OrderStyles';
 import useImageV2 from '../hooks/useImageV2';
-import { getOrderDetailsRequest, updateOrderRequest } from '../requests/OrdersRequests';
-import { getServiceRequest } from '../requests/ServicesRequests';
-import { getClient } from '../requests/ClientsRequests';
 import { selectSession } from '../features/slices/sessionSlice';
 import useFormatDate from '../hooks/useFormatDate';
+import useXMLRequest from '../hooks/useXMLRequest';
+import { getOrderDetailsXmls, updateOrderXmls } from '../XMLRequests/ordersRequests';
+import { getClientXmls } from '../XMLRequests/clientRequests';
+import { getServiceXmls } from '../XMLRequests/servicesRequests';
 
 const Order = () => {
 
@@ -21,40 +22,48 @@ const Order = () => {
 
     const { id } = useParams();
     const navigate = useNavigate();
+    // eslint-disable-next-line no-unused-vars
     const [isOpen, openModal, closeModal] = useModal(true, navigate);
     let isDark = useSelector(selectTheme);
     let session = useSelector(selectSession);
     const image = useImageV2();
     const image2 = useImageV2();
     const formatDate = useFormatDate();
+    const request = useXMLRequest();
 
-    const handleChangeOrderStatus = async (idOrder, status) => {
-        let response = await updateOrderRequest(session.id, idOrder, status, session.apikey);
+    const handleChangeOrderStatus = async (status) => {
+        let xmls = updateOrderXmls(session.id, order.idServiceSol, status, session.apikey);
+        let response = await request(xmls, 'UpdateStatusServiceNurseReturn');
         if(response.status === 'success') {
-            let orderResponse = await getOrderDetailsRequest(session.id, id, session.apikey);
+            xmls = getOrderDetailsXmls(session.id, id, session.apikey);
+            let orderResponse = await request(xmls, 'GetServSolbyIdNurseReturn');
             if(orderResponse.status === 'success') {
-                let clientResponse;
-                let serviceResponse;
                 setOrder(orderResponse.datos[0]);
-                clientResponse = await getClient(session.id, orderResponse.datos[0].idCliente, session.apikey);
-                setClient(clientResponse.datos[0]);
-                serviceResponse = await getServiceRequest(session.id, orderResponse.datos[0].idServicio, session.apikey);
-                console.log(serviceResponse);
-                setService(serviceResponse.datos[0]);
+                // let clientResponse;
+                // let serviceResponse;
+            //     xmls = getClientXmls(session.id, orderResponse.datos[0].idCliente, session.apiKey);
+            //     clientResponse = await request(xmls, 'GetClientbyIdNurseReturn');
+            //     setClient(clientResponse.datos[0]);
+            //     xmls = getServiceXmls(session.id, orderResponse.datos[0].idServicio, session.apikey);
+            //     serviceResponse = await request(xmls, 'GetServiceByIdNurseReturn');
+            //     setService(serviceResponse.datos[0]);
             }
         }
     }
 
     useEffect(() => {
         (async () => {
-            let orderResponse = await getOrderDetailsRequest(session.id, id, session.apikey);
+            let xmls = getOrderDetailsXmls(session.id, id, session.apikey);
+            let orderResponse = await request(xmls, 'GetServSolbyIdNurseReturn');
             if(orderResponse.status === 'success') {
                 let clientResponse;
                 let serviceResponse;
                 setOrder(orderResponse.datos[0]);
-                clientResponse = await getClient(session.id, orderResponse.datos[0].idCliente, session.apikey);
+                xmls = getClientXmls(session.id, orderResponse.datos[0].idCliente, session.apikey);
+                clientResponse = await request(xmls, 'GetClientbyIdNurseReturn');
                 setClient(clientResponse.datos[0]);
-                serviceResponse = await getServiceRequest(session.id, orderResponse.datos[0].idServicio, session.apikey);
+                xmls = getServiceXmls(session.id, orderResponse.datos[0].idServicio, session.apikey);
+                serviceResponse = await request(xmls, 'GetServiceByIdNurseReturn');
                 console.log(serviceResponse);
                 setService(serviceResponse.datos[0]);
             }
@@ -113,27 +122,27 @@ const Order = () => {
                                 { order.status === 'Recibido' ? 
                                 <><button 
                                     className="accept" 
-                                    onClick={() => handleChangeOrderStatus(order.idServiceSol, 'Aceptado')} 
+                                    onClick={() => handleChangeOrderStatus('Aceptado')} 
                                 >Aceptar</button>
                                 <button 
                                     className="reject" 
-                                    onClick={() => handleChangeOrderStatus(order.idServiceSol, 'Rechazado')} 
+                                    onClick={() => handleChangeOrderStatus('Rechazado')} 
                                 >Rechazar</button></> : order.status === 'Aceptado' ?
                                 <><button 
                                     className="accept" 
-                                    onClick={() => handleChangeOrderStatus(order.idServiceSol, 'En curso')} 
+                                    onClick={() => handleChangeOrderStatus('En curso')} 
                                 >Iniciar</button>
                                 <button 
                                     className="reject" 
-                                    onClick={() => handleChangeOrderStatus(order.idServiceSol, 'Cancelado')} 
+                                    onClick={() => handleChangeOrderStatus('Cancelado')} 
                                 >Cancelar</button></> : order.status === 'En curso' &&
                                 <><button 
                                     className="accept" 
-                                    onClick={() => handleChangeOrderStatus(order.idServiceSol, 'Terminado')} 
+                                    onClick={() => handleChangeOrderStatus('Terminado')} 
                                 >Terminar</button>
                                 <button 
                                     className="reject" 
-                                    onClick={() => handleChangeOrderStatus(order.idServiceSol, 'Cancelado')} 
+                                    onClick={() => handleChangeOrderStatus('Cancelado')} 
                                 >Cancelar</button></>
                                 }
                             </div>

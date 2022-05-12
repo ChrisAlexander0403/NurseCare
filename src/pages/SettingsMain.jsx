@@ -4,6 +4,7 @@ import { Moon, Sun, Switch, ThemeDiv } from '../components/navbar/NavBarStyles';
 import { selectTheme, switchTheme, changeFont, selectFont } from '../features/slices/themeSlice';
 import { Arrow, DropdownContent, DropdownList } from '../styles/DropdownListStyles';
 import { SettingsMainContainer } from '../styles/SettingsMainStyles';
+import useWindowsDimensions from '../hooks/useWindowsDimensions';
 
 const fonts = [
   {
@@ -67,11 +68,31 @@ const SettingsMain = () => {
 
   const [isActive, setIsActive] = useState(false);
   const [selected, setSelected] = useState('');
+  const [device, setDevice] = useState('');
 
   let dispatch = useDispatch();
   let isDark = useSelector(selectTheme);
   let actualFont = useSelector(selectFont);
   let switchRef = useRef(null);
+  // eslint-disable-next-line no-unused-vars
+  let { height, width } = useWindowsDimensions();
+
+  useEffect(() => {
+    // (() => {
+    //   const ua = navigator.userAgent;
+    //   if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+    //     setDevice("tablet");
+    //   }
+    //   if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)
+    //   ) {
+    //     setDevice("mobile");
+    //   }
+    //   setDevice("desktop");
+    // })();
+    if (width <= 480) {
+      setDevice('mobile');
+    }
+  }, [width]);
 
   useEffect(() => {
     
@@ -106,7 +127,7 @@ const SettingsMain = () => {
         </div>
         <div className="option">
           <p>Fuente</p>
-          <div style={{ width: '250px' }}>
+          <div style={{ width: device!== 'mobile' ? '250px' : '150px' }}>
             <DropdownList isDark={isDark}>
               <button type='button' onClick={() => setIsActive(!isActive)}>{selected}<Arrow /></button>
               {isActive && (

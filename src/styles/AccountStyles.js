@@ -61,6 +61,12 @@ export const AccountContainer = styled.div`
             box-shadow: ${props => props.isDark ? '2px 2px 5px 5px rgba(0, 0, 0, .1)' : '2px 2px 5px 5px rgba(0, 0, 0, .05)'};
             background: ${props => props.isDark ? '#222' : '#FFF'};
 
+            @media screen and (max-width: 480px) {
+                width: 100vw;
+                margin-top: 30px;
+                border-radius: 0;
+            }
+
             & > .content-line {
                 display: flex;
                 justify-content: space-between;
@@ -68,6 +74,10 @@ export const AccountContainer = styled.div`
                 padding: 10px 20px;
                 border-bottom: ${props => props.isDark ? '3px solid #181818' : '3px solid #EEE'};
                 color: ${props => props.isDark ? '#999' : '#666'};
+
+                @media screen and (max-width: 480px) {
+                    font-size: 14px;
+                }
 
                 &:last-child {
                     border: none;

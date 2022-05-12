@@ -44,6 +44,10 @@ export const CategoriesContainer = styled.main`
                         background: ${props => props.isDark ? '#213A4A' : '#417493'};
                         color: #eee;
                     }
+
+                    @media screen and (max-width: 480px) {
+                        visibility: hidden;
+                    }
                 }
             }
         }
@@ -53,6 +57,13 @@ export const CategoriesContainer = styled.main`
         display: flex;
         flex-wrap: wrap;
         padding: 20px;
+
+        @media screen and (max-width: 480px) {
+            padding: 20px 0;
+            flex-direction: column;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
         
         & > .catalog {
             position: relative;
@@ -108,6 +119,31 @@ export const CategoriesContainer = styled.main`
         }
     }
     
+`;
+
+export const CreateButton = styled.button`
+    position: absolute;
+    right: 15px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    box-shadow: ${props => props.isDark ? '2px 2px 5px 5px rgba(0, 0, 0, .1)' : '2px 2px 5px 5px rgba(0, 0, 0, .05)'};
+    background: ${props => props.isDark ? '#282828' : '#FFF'};
+    color: #417493;
+    cursor: pointer;
+    user-select: none;
+    border: none;
+    outline: none;
+    transition: all .3s ease;
+    z-index: 3;
+
+    &:hover {
+        background: ${props => props.isDark ? '#213A4A' : '#417493'};
+        color: #eee;
+    }
 `;
 
 export const Create = styled.div`
