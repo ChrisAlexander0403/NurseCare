@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, Routes, Route, Navigate } from 'react-router-dom';
 import { AiOutlinePlus } from 'react-icons/ai';
 
@@ -12,12 +12,24 @@ import { selectTheme } from '../features/slices/themeSlice';
 import { useSelector } from 'react-redux';
 import Order from './Order';
 import Client from './Client';
+import useWindowsDimensions from '../hooks/useWindowsDimensions';
 
 const Dashboard = () => {
 
-    const [isActive, setIsActive] = useState(false);
+    const [isActive, setIsActive] = useState(true);
 
     let isDark = useSelector(selectTheme);
+    let { height, width } = useWindowsDimensions();
+
+    const handleActive = () => {
+        if (width <= 480) setIsActive(false);
+    }
+
+    useEffect(() => {
+      if (width <= 480) setIsActive(false);
+      //eslint-disable-next-line
+    }, []);
+    
 
   return (
     <main>
@@ -46,16 +58,16 @@ const Dashboard = () => {
                 <div className="options">
                     <ul>
                         <li>
-                            <NavLink to="home" onClick={() => setIsActive(false)}>Resumen</NavLink>
+                            <NavLink to="home" onClick={handleActive}>Resumen</NavLink>
                         </li>
                         <li>
-                            <NavLink to="orders" onClick={() => setIsActive(false)}>Pedidos</NavLink>
+                            <NavLink to="orders" onClick={handleActive}>Pedidos</NavLink>
                         </li>
                         <li>
-                            <NavLink to="history" onClick={() => setIsActive(false)}>Historial de pedidos</NavLink>
+                            <NavLink to="history" onClick={handleActive}>Historial de pedidos</NavLink>
                         </li>
                         <li>
-                            <NavLink to="clients" onClick={() => setIsActive(false)}>Clientes</NavLink>
+                            <NavLink to="clients" onClick={handleActive}>Clientes</NavLink>
                         </li>
                     </ul>
                 </div>

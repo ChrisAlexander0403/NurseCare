@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Routes, NavLink, Navigate } from 'react-router-dom';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,18 +14,29 @@ import { CloseSession } from '../styles/SettingsStyles';
 import { selectTheme } from '../features/slices/themeSlice';
 import User from './User';
 import { AiOutlinePlus } from 'react-icons/ai';
+import useWindowsDimensions from '../hooks/useWindowsDimensions';
 
 const Settings = () => {
 
-    const [isActive, setIsActive] = useState(false);
+    const [isActive, setIsActive] = useState(true);
     
     const [isOpen, openModal, closeModal] = useModal();
     const dispatch = useDispatch();
     let isDark = useSelector(selectTheme);
+    let { height, width } = useWindowsDimensions();
 
     const handleLogout = () => {
         dispatch(logout());
     }
+
+    const handleActive = () => {
+        if (width <= 480) setIsActive(false);
+    }
+
+    useEffect(() => {
+        if (width <= 480) setIsActive(false);
+        //eslint-disable-next-line
+      }, []);
 
   return (
     <>
@@ -71,16 +82,16 @@ const Settings = () => {
                 <div className="options">
                     <ul>
                         <li>
-                            <NavLink to="main" onClick={() => setIsActive(false)}>General</NavLink>
+                            <NavLink to="main" onClick={handleActive}>General</NavLink>
                         </li>
                         {/* <li>
                             <NavLink to="interface">Interfaz de aplicación</NavLink>
                         </li> */}
                         <li>
-                            <NavLink to="users" onClick={() => setIsActive(false)}>Usuarios</NavLink>
+                            <NavLink to="users" onClick={handleActive}>Usuarios</NavLink>
                         </li>
                         <li>
-                            <NavLink to="account" onClick={() => setIsActive(false)}>Cuenta</NavLink>
+                            <NavLink to="account" onClick={handleActive}>Cuenta</NavLink>
                         </li>
                         <li>
                             <button onClick={() => {setIsActive(false); openModal()}}><FaSignOutAlt />&nbsp;&nbsp;&nbsp;Cerrar sesión</button>
